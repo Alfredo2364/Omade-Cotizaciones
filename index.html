@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribuciones Omade - Soluciones Profesionales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon_io/favicon-16x16.png">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 15px;">
+            <div class="logo">Distribuciones Omade</div>
+            <img src="assets/images/logo/Logo.png" alt="OMADE Logo" style="height: 55px;">
+        </div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#home">Inicio</a>
+            <a href="#services">Servicios</a>
+            <a href="#footer-contact">Contacto</a>
+            <a href="login.php" class="btn-login">Iniciar Sesión</a>
+        </div>
+    </nav>
+
+    <header class="hero" id="home">
+        <!-- Hero Content Only (No Slider) -->
+        <div class="hero-content">
+            <h1>Excelencia en Cada Detalle</h1>
+            <p>Soluciones premium para las necesidades de tu empresa. Obtén una cotización personalizada hoy.</p>
+            <div style="display:flex; gap: 15px; justify-content: center;">
+                <a href="#contact" class="btn-cta">Solicitar Cotización</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="section" id="services">
+        <h2 class="section-title">Nuestros Servicios</h2>
+        <div class="services-grid">
+            <!-- Left: Highlight Service -->
+            <div class="service-card" style="display: flex; flex-direction: column; justify-content: center;">
+                <div class="service-icon">⚙️</div>
+                <h3>Soluciones Integrales</h3>
+                <p>Especialistas en venta de
+                    refacciones automotrices y Booster de frenos.</p>
+                <a href="#footer-contact" class="btn-cta"
+                    style="margin-top: 20px; font-size: 0.9rem; padding: 10px 20px;">Contáctanos</a>
+            </div>
+
+            <!-- Right: Logo Carousel (spans 2 cols on wide screens) -->
+            <div class="brand-carousel-container">
+                <h3 style="text-align: center; color: #64748b; margin-bottom: 20px; font-size: 1.1rem;">Empresas que
+                    confían en nosotros y Marcas que manejamos</h3>
+
+                <div class="slider">
+                    <div class="slide-track">
+                        <!-- Valid Logos (5 Items) -->
+                        <div class="slide"><img src="assets/images/marcas/marca_1.png" alt="Marca 1"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca_2.png" alt="Marca 2"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca_3.png" alt="Marca 3"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca 4.jpeg" alt="Marca 4"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca_5.png" alt="Marca 5"></div>
+
+                        <!-- Duplicate Set for Seamless Loop (Must match exactly) -->
+                        <div class="slide"><img src="assets/images/marcas/marca_1.png" alt="Marca 1"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca_2.png" alt="Marca 2"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca_3.png" alt="Marca 3"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca 4.jpeg" alt="Marca 4"></div>
+                        <div class="slide"><img src="assets/images/marcas/marca_5.png" alt="Marca 5"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <h2 class="section-title">Solicita una Cotización Gratuita</h2>
+        <div class="quote-form-container">
+            <form id="quoteForm">
+                <div class="form-group">
+                    <label for="name">Nombre Completo</label>
+                    <input type="text" id="name" required placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" required placeholder="juan@empresa.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Teléfono de Contacto</label>
+                    <input type="tel" id="phone" required placeholder="55 1234 5678">
+                </div>
+                <div class="form-group">
+                    <label for="address">Dirección de Envío (Opcional)</label>
+                    <input type="text" id="address" placeholder="Calle, Número, Colonia...">
+                </div>
+                <div class="form-group">
+                    <label for="service">Servicio de Interés</label>
+                    <select id="service" required>
+                        <option value="">Selecciona un servicio...</option>
+                        <option value="Refacciones">Venta de Refacciones</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Detalles de la Cotización</label>
+                    <textarea id="description" rows="4" required
+                        placeholder="Cuéntanos sobre tus necesidades..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Enviar Solicitud</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer-contact" style="background: #0b1e3b; color: white; padding: 40px 20px; margin-top: 50px;">
+        <div
+            style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+            <div>
+                <h3 style="color: #1abc9c; margin-bottom: 15px;">Distribuciones Omade</h3>
+                <p style="opacity: 0.8; font-size: 0.9rem;">
+                    Soluciones integrales de maquinaria, refacciones y logística para impulsar tu industria.
+                </p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Enlaces Rápidos</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 8px;"><a href="#home"
+                            style="color: white; text-decoration: none; opacity: 0.8;">Inicio</a></li>
+                    <li style="margin-bottom: 8px;"><a href="#services"
+                            style="color: white; text-decoration: none; opacity: 0.8;">Servicios</a></li>
+                    <li style="margin-bottom: 8px;"><a href="#contact"
+                            style="color: white; text-decoration: none; opacity: 0.8;">Contacto</a></li>
+                    <li style="margin-bottom: 8px;"><a href="login.php"
+                            style="color: white; text-decoration: none; opacity: 0.8;">Acceso Clientes</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Contacto</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem; margin-bottom: 8px;">📍 Mérida, Yucatán, México</p>
+                <p style="opacity: 0.8; font-size: 0.9rem; margin-bottom: 8px;">📞 99 9909 1286</p>
+                <p style="opacity: 0.8; font-size: 0.9rem;">✉️ contacto@omade.com.mx</p>
+            </div>
+        </div>
+        <div
+            style="text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 20px; font-size: 0.8rem; opacity: 0.6;">
+            &copy;
+            <?= date('Y') ?> Distribuciones Omade. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Global Toast/Alert Component -->
+    <div id="toast-overlay">
+        <div id="toast-box">
+            <div id="toast-icon"></div>
+            <div id="toast-message"></div>
+        </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>
