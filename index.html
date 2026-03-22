@@ -40,8 +40,9 @@
         <div class="hero-content">
             <h1>Excelencia en Cada Detalle</h1>
             <p>Soluciones premium para las necesidades de tu empresa. Obtén una cotización personalizada hoy.</p>
-            <div style="display:flex; gap: 15px; justify-content: center;">
+            <div style="display:flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <a href="#contact" class="btn-cta">Solicitar Cotización</a>
+                <a href="catalog.php" class="btn-cta secondary">Ver Catálogo</a>
             </div>
         </div>
     </header>
@@ -156,7 +157,7 @@
         <div
             style="text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 20px; font-size: 0.8rem; opacity: 0.6;">
             &copy;
-            <?= date('Y') ?> Distribuciones Omade. Todos los derechos reservados.
+            <script>document.write(new Date().getFullYear())</script> Distribuciones Omade. Todos los derechos reservados.
         </div>
     </footer>
 

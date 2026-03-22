@@ -55,6 +55,12 @@ try {
         }
         
         $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($messages as $key => $msg) {
+            $messages[$key]['message'] = htmlspecialchars($msg['message'], ENT_QUOTES, 'UTF-8');
+            if (isset($msg['sender_name'])) {
+                $messages[$key]['sender_name'] = htmlspecialchars($msg['sender_name'], ENT_QUOTES, 'UTF-8');
+            }
+        }
         echo json_encode(['success' => true, 'messages' => $messages]);
         exit;
     }

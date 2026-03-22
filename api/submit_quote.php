@@ -128,12 +128,12 @@ if ($stmt->execute([$name, $email, $phone, $address, $service, $description])) {
             <div class='client-box'>
                 <table width='100%'>
                     <tr>
-                        <td><strong>Cliente:</strong> $name</td>
-                        <td><strong>Correo:</strong> $email</td>
+                        <td><strong>Cliente:</strong> " . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "</td>
+                        <td><strong>Correo:</strong> " . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . "</td>
                     </tr>
                     <tr>
-                        <td><strong>Teléfono:</strong> $phone</td>
-                        <td><strong>Dirección:</strong> $address</td>
+                        <td><strong>Teléfono:</strong> " . htmlspecialchars($phone, ENT_QUOTES, 'UTF-8') . "</td>
+                        <td><strong>Dirección:</strong> " . htmlspecialchars($address, ENT_QUOTES, 'UTF-8') . "</td>
                     </tr>
                 </table>
             </div>
@@ -154,7 +154,7 @@ if ($stmt->execute([$name, $email, $phone, $address, $service, $description])) {
                         <td>1.00</td>
                         <td>SERV</td>
                         <td>
-                            <strong>Solicitud: $service</strong><br>
+                            <strong>Solicitud: " . htmlspecialchars($service, ENT_QUOTES, 'UTF-8') . "</strong><br>
                             ".nl2br(htmlspecialchars($description))."
                         </td>
                         <td align='right'>$0.00</td>

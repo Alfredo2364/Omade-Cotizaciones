@@ -477,18 +477,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_quote_details'])
             </div>
 
             <!-- Attached Items Table -->
-            <table class="table" style="font-size: 0.95rem;">
-                <thead style="background: #f8fafc; color: #475569;">
-                    <tr>
-                        <th style="padding: 10px;">Producto / Servicio</th>
-                        <th style="padding: 10px; width: 100px; text-align: center;">Cant.</th>
-                        <th style="padding: 10px; width: 120px; text-align: right;">Unitario</th>
-                        <th style="padding: 10px; width: 120px; text-align: right;">Total</th>
-                        <th style="padding: 10px; width: 50px;"></th>
-                    </tr>
-                </thead>
-                <tbody id="quote-items-body"></tbody>
-            </table>
+            <div class="table-container">
+                <table class="table" style="font-size: 0.95rem; width: 100%; min-width: 600px;">
+                    <thead style="background: #f8fafc; color: #475569;">
+                        <tr>
+                            <th style="padding: 10px;">Producto / Servicio</th>
+                            <th style="padding: 10px; width: 100px; text-align: center;">Cant.</th>
+                            <th style="padding: 10px; width: 120px; text-align: right;">Unitario</th>
+                            <th style="padding: 10px; width: 120px; text-align: right;">Total</th>
+                            <th style="padding: 10px; width: 50px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="quote-items-body"></tbody>
+                </table>
+            </div>
             <input type="hidden" name="attached_products" id="attached_products_json">
         </div>
 

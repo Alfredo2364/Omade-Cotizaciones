@@ -175,6 +175,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <span class="stock-badge" style="background:#ddd; color:#666;">Agotado</span>
                                     <?php endif; ?>
                                 </div>
+                                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee;">
+                                    <a href="login.php" style="display: block; text-align: center; background: #f8fafc; color: #0b1e3b; text-decoration: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; border: 1px solid #e2e8f0;">
+                                        Inicia sesión para cotizar
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>

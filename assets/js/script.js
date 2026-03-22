@@ -121,16 +121,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const firstName = document.getElementById('reg_firstname').value.trim();
-            const paternal = document.getElementById('reg_paternal').value.trim();
-            const maternal = document.getElementById('reg_maternal').value.trim();
-
-            const fullName = `${firstName} ${paternal} ${maternal}`.trim();
+            
+            const submitBtn = registerForm.querySelector('button');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Registrando...';
+            submitBtn.disabled = true;
 
             const formData = {
-                name: fullName,
-                email: document.getElementById('reg_email').value,
-                password: document.getElementById('reg_password').value
+                name: document.getElementById('name').value.trim(),
+                paternal_surname: document.getElementById('paternal_surname').value.trim(),
+                maternal_surname: document.getElementById('maternal_surname').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value
             };
 
             try {
@@ -143,13 +145,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (result.success) {
                     showToast(result.message, 'success');
-                    setTimeout(() => location.reload(), 2000);
+                    setTimeout(() => window.location.href = 'login.php', 1500);
                 } else {
                     showToast(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 showToast('Error de conexión.', 'error');
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
             }
         });
     }

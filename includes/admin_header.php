@@ -50,6 +50,7 @@ if (empty($_SESSION['csrf_token'])) {
 
     <style>
         /* Admin Specific Overrides */
+        * { box-sizing: border-box; }
         body { display: flex; min-height: 100vh; background: #f4f7f6; font-family: 'Inter', sans-serif; margin: 0; }
         
         /* Sidebar Styling */

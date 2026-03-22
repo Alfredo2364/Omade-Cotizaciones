@@ -62,9 +62,9 @@ try {
         
         $results[] = [
             'id' => $client['id'],
-            'full_name' => $fullName,
-            'initial' => mb_strtoupper(mb_substr($name, 0, 1)) ?: '?',
-            'email' => $client['email'] ?? '',
+            'full_name' => htmlspecialchars($fullName, ENT_QUOTES, 'UTF-8'),
+            'initial' => htmlspecialchars(mb_strtoupper(mb_substr($name, 0, 1)) ?: '?', ENT_QUOTES, 'UTF-8'),
+            'email' => htmlspecialchars($client['email'] ?? '', ENT_QUOTES, 'UTF-8'),
             'created_at' => $client['created_at'],
             'formatted_date' => date('d/m/Y', strtotime($client['created_at'])),
             'is_banned' => $client['is_banned']

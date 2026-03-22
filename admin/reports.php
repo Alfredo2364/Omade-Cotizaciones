@@ -174,25 +174,27 @@
     <div class="details-section">
         <div class="detail-card">
             <h3>Detalle de Mejores Productos</h3>
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Unidades</th>
-                        <th>Ingresos</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($topProducts as $p): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($p['name']) ?></td>
-                        <td class="text-center"><?= $p['total_sold'] ?></td>
-                        <td class="text-right">$<?= number_format($p['revenue'], 2) ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php if(empty($topProducts)) echo "<tr><td colspan='3' class='text-center'>Sin datos</td></tr>"; ?>
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Unidades</th>
+                            <th>Ingresos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($topProducts as $p): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($p['name']) ?></td>
+                            <td class="text-center"><?= $p['total_sold'] ?></td>
+                            <td class="text-right">$<?= number_format($p['revenue'], 2) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if(empty($topProducts)) echo "<tr><td colspan='3' class='text-center'>Sin datos</td></tr>"; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
