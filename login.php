@@ -1,10 +1,14 @@
 <?php
 session_start();
 if (isset($_SESSION['user_id'])) {
-    if ($_SESSION['role'] === 'admin') {
+    if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'super_admin') {
         header("Location: admin/dashboard.php");
-    } else {
+    } else if ($_SESSION['role'] === 'client') {
         header("Location: user/dashboard.php");
+    } else {
+        // Fallback to avoid catastrophic loops if role is corrupted
+        session_destroy();
+        header("Location: index.html");
     }
     exit;
 }
