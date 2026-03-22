@@ -40,17 +40,21 @@
         .filter-group input {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            background: var(--surface-3);
+            border: 1px solid var(--border);
             border-radius: 5px;
+            color: var(--text-color);
         }
         .btn-generate {
-            background: #0f172a;
+            background: var(--primary-color);
             color: white;
             padding: 12px 25px;
             height: 42px;
             border: none;
             cursor: pointer;
             white-space: nowrap;
+            border-radius: 8px;
+            font-weight: 600;
         }
         
         @media (max-width: 600px) {
@@ -201,15 +205,28 @@
 </div>
 
 <!-- Chart.js Integration -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../assets/js/chart.min.js"></script>
 <script>
     const colors = {
         primary: '#3b82f6',
         secondary: '#6366f1',
         accent: '#f59e0b',
         success: '#10b981',
-        grid: '#f1f5f9',
-        text: '#64748b'
+        grid: 'rgba(255,255,255,0.05)',
+        text: '#94a3b8'
+    };
+
+    const isMobile = window.innerWidth < 768;
+    const commonScales = {
+        y: {
+            beginAtZero: true,
+            grid: { color: colors.grid },
+            ticks: { color: colors.text, font: { size: isMobile ? 10 : 12 } }
+        },
+        x: {
+            grid: { display: false },
+            ticks: { color: colors.text, font: { size: isMobile ? 10 : 12 } }
+        }
     };
 
     // Top Products Chart
@@ -237,6 +254,7 @@
             }]
         },
         options: {
+            indexAxis: isMobile ? 'y' : 'x',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -248,11 +266,17 @@
                     grid: { color: colors.grid },
                     ticks: {
                         stepSize: 1,
-                        precision: 0
+                        precision: 0,
+                        color: colors.text,
+                        font: { size: isMobile ? 10 : 12 }
                     }
                 },
                 x: {
-                    grid: { display: false }
+                    grid: { display: !isMobile },
+                    ticks: {
+                        color: colors.text,
+                        font: { size: isMobile ? 10 : 12 }
+                    }
                 }
             }
         }
@@ -301,10 +325,18 @@
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: { color: colors.grid }
+                    grid: { color: colors.grid },
+                    ticks: { color: colors.text, font: { size: isMobile ? 10 : 11 } }
                 },
                 x: {
-                    grid: { display: false }
+                    grid: { display: false },
+                    ticks: { 
+                        color: colors.text, 
+                        font: { size: isMobile ? 9 : 11 },
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: isMobile ? 6 : 12
+                    }
                 }
             }
         }
@@ -328,11 +360,11 @@
     }
 
     .report-card, .chart-card, .detail-card {
-        background: white;
+        background: var(--surface-2);
         border-radius: 12px;
         padding: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        border: 1px solid #f1f5f9;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border);
         height: 100%;
     }
 
@@ -340,16 +372,16 @@
     .card-orders .value { color: #3b82f6; }
     .card-clients .value { color: #8b5cf6; }
     
-    .report-card .icon { font-size: 1.5rem; color: #94a3b8; margin-bottom: 10px; }
-    .report-card .label { font-size: 0.9rem; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
-    .report-card .value { font-size: 1.8rem; font-weight: 800; }
+    .report-card .icon { font-size: 1.5rem; color: var(--muted); margin-bottom: 10px; }
+    .report-card .label { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+    .report-card .value { font-size: 1.8rem; font-weight: 800; color: var(--text-color); }
 
     .chart-header {
         margin-bottom: 15px;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border);
         padding-bottom: 10px;
     }
-    .chart-header h3 { margin: 0; font-size: 1.1rem; color: #1e293b; }
+    .chart-header h3 { margin: 0; font-size: 1.1rem; color: var(--text-color); }
     .chart-body {
         position: relative;
         height: 300px;
@@ -364,8 +396,8 @@
     }
 
     .report-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .report-table th { text-align: left; padding: 10px; background: #f8fafc; color: #64748b; font-size: 0.8rem; text-transform: uppercase; }
-    .report-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+    .report-table th { text-align: left; padding: 10px; background: var(--surface-3); color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+    .report-table td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--text-color); }
     .text-center { text-align: center; }
     .text-right { text-align: right; }
 

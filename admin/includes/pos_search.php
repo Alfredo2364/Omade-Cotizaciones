@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="../assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
 <style>
     /* ---- POS Search Container ---- */
@@ -45,15 +45,15 @@
     }
 
     .pos-search-bar {
-        background: white;
-        padding: 14px 16px;
-        border-radius: 16px;
+        background: var(--surface-2);
+        padding: 12px 16px;
+        border-radius: 12px;
         display: flex;
         gap: 12px;
         flex-wrap: nowrap;       /* Desktop: single row */
         align-items: center;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-        border: 1px solid #e2e8f0;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border);
     }
 
     /* ---- Search group (text) ---- */
@@ -69,13 +69,13 @@
     .search-input-group input {
         width: 100%;
         padding: 11px 12px 11px 38px;
-        border: 2px solid #e2e8f0;
+        border: 1px solid var(--border);
         border-radius: 10px;
         font-size: 0.95rem;
         outline: none;
         transition: border-color 0.2s, box-shadow 0.2s;
-        background: #f8fafc;
-        color: #0f172a;
+        background: var(--surface-3);
+        color: var(--text-color);
         box-sizing: border-box;
     }
     .search-input-group input:focus {
@@ -104,12 +104,13 @@
     .scan-input-group input {
         width: 100%;
         padding: 11px 10px 11px 36px;
-        border: 2px solid #e2e8f0;
+        border: 1px solid var(--border);
         border-radius: 10px;
         font-size: 0.9rem;
         outline: none;
         transition: border-color 0.2s;
-        background: #f8fafc;
+        background: var(--surface-3);
+        color: var(--text-color);
         box-sizing: border-box;
     }
     .scan-input-group input:focus {
@@ -144,10 +145,10 @@
         position: absolute;
         top: calc(100% + 6px);
         left: 0; right: 0;
-        background: white;
-        border: 2px solid #3b82f6;
+        background: var(--surface-2);
+        border: 1px solid var(--primary-color);
         border-radius: 12px;
-        box-shadow: 0 20px 30px rgba(0,0,0,0.15);
+        box-shadow: var(--card-shadow);
         z-index: 99999;
         display: none;
         max-height: 380px;
@@ -156,13 +157,13 @@
     .search-result-item {
         padding: 13px 16px;
         cursor: pointer;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
         transition: background 0.1s;
     }
-    .search-result-item:hover { background: #eff6ff; }
+    .search-result-item:hover { background: var(--surface-3); }
     .search-result-item:last-child { border-bottom: none; }
     .search-loading-state {
         padding: 20px; text-align: center; color: #64748b; font-weight: 500;
@@ -170,8 +171,8 @@
 
     /* ---- Scanner Modal ---- */
     .scanner-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99999; align-items: center; justify-content: center; }
-    .scanner-content { background: white; padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; }
-    .btn-close-cam { margin-top: 15px; width: 100%; padding: 12px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .scanner-content { background: var(--surface-2); padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--border); }
+    .btn-close-cam { margin-top: 15px; width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
     /* ---- TABLET (768-1024px): scan row wraps below, camera shows label ---- */
     @media (max-width: 1024px) {
@@ -239,10 +240,10 @@
                     div.className = 'search-result-item';
                     div.innerHTML = `
                         <div style="flex:1;">
-                            <div style="font-weight: 600; color: #0f172a; font-size: 1rem;">${p.name}</div>
-                            <div style="font-size: 0.8rem; color: #64748b;">CODE: ${p.product_code || 'N/A'}</div>
+                            <div style="font-weight: 600; color: var(--text-color); font-size: 1rem;">${p.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--muted);">CODE: ${p.product_code || 'N/A'}</div>
                         </div>
-                        <div style="font-weight: 700; color: #16a34a; font-size: 1.1rem;">$${parseFloat(p.price).toFixed(2)}</div>
+                        <div style="font-weight: 700; color: var(--secondary-color); font-size: 1.1rem;">$${parseFloat(p.price).toFixed(2)}</div>
                     `;
                     div.onclick = function() {
                         if(typeof addToCart === 'function') {

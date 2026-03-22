@@ -137,8 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_admin'])) {
     <div class="card-header-styled">
         <h3><i class="fas fa-users-cog"></i> Lista de Administradores</h3>
     </div>
-    <div class="table-container" style="box-shadow: none; border-radius: 0;">
-        <table>
+    <div class="table-container" style="box-shadow: none; border-radius: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table style="width: 100%; min-width: 600px;">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -156,22 +156,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_admin'])) {
                 <tr>
                     <td>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 35px; height: 35px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4338ca; font-weight: bold;">
+                            <div style="width: 35px; height: 35px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-weight: 700; border: 1px solid var(--border);">
                                 <?= strtoupper(substr($admin['name'], 0, 1)) ?>
                             </div>
-                            <span style="font-weight: 500; color: #1f2937;"><?= htmlspecialchars($admin['name']) ?></span>
+                            <span style="font-weight: 600; color: var(--text-color);"><?= htmlspecialchars($admin['name']) ?></span>
                         </div>
                     </td>
-                    <td><?= htmlspecialchars($admin['email']) ?></td>
+                    <td style="color: var(--text-muted);"><?= htmlspecialchars($admin['email']) ?></td>
                     <td>
                         <?php if($admin['role'] === 'super_admin'): ?>
-                            <span class="badge badge-purple">Super Admin</span>
+                            <span class="badge badge-purple" style="white-space: nowrap;">Super Admin</span>
                         <?php else: ?>
-                            <span class="badge badge-blue">Admin</span>
+                            <span class="badge badge-blue" style="white-space: nowrap;">Admin</span>
                         <?php endif; ?>
                     </td>
-                    <td><span class="badge badge-green">Activo</span></td>
-                    <td style="color: #6b7280; font-size: 0.9rem;"><?= date('d/m/Y', strtotime($admin['created_at'])) ?></td>
+                    <td><span class="badge badge-green" style="white-space: nowrap;">Activo</span></td>
+                    <td style="color: var(--text-muted); font-size: 0.9rem;"><?= date('d/m/Y', strtotime($admin['created_at'])) ?></td>
                     <td>
                         <?php if($admin['id'] != $_SESSION['user_id']): // Prevent self-delete logic placeholder ?> 
                              <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash"></i></button>
@@ -235,11 +235,11 @@ function togglePermissions() {
     }
 
     .admin-form-card {
-        background: white;
+        background: var(--surface-2);
         border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Softer shadow */
+        box-shadow: var(--card-shadow);
         padding: 30px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid var(--border);
         position: relative;
     }
     .admin-form-card::before {
@@ -255,10 +255,10 @@ function togglePermissions() {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 25px;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid var(--border);
         padding-bottom: 15px;
     }
-    .form-header h3 { margin: 0; color: #111827; display: flex; align-items: center; gap: 10px; }
+    .form-header h3 { margin: 0; color: var(--text-color); display: flex; align-items: center; gap: 10px; }
     
     .form-grid {
         display: grid;
@@ -267,60 +267,62 @@ function togglePermissions() {
     }
 
     .form-group label {
-        display: block; font-weight: 600; color: #374151; margin-bottom: 6px; font-size: 0.9rem;
+        display: block; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; font-size: 0.9rem;
     }
     .input-icon { position: relative; }
-    .input-icon i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+    .input-icon i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
     .input-icon input, .input-icon select {
         width: 100%; padding: 10px 10px 10px 35px;
-        border: 1px solid #d1d5db; border-radius: 8px;
+        background: var(--surface-3); color: var(--text-color);
+        border: 1px solid var(--border); border-radius: 8px;
         outline: none; transition: border 0.2s, box-shadow 0.2s;
     }
     .input-icon input:focus, .input-icon select:focus {
-        border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        background: var(--surface-1);
     }
 
     /* Permissions Styling */
     .permissions-section {
-        background: #f9fafb;
+        background: var(--surface-1);
         padding: 20px;
         border-radius: 10px;
         margin-top: 20px;
-        border: 1px dashed #d1d5db;
+        border: 1px dashed var(--border);
     }
     .perm-title {
         display: block; font-weight: 600; color: #374151; margin-bottom: 15px;
     }
     .permissions-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 8px;
     }
     .perm-card {
-        background: white; border: 1px solid #e5e7eb; border-radius: 8px;
+        background: var(--surface-3); border: 1px solid var(--border); border-radius: 8px;
         padding: 10px 15px; cursor: pointer; transition: all 0.2s;
         display: flex; align-items: center; gap: 10px;
     }
-    .perm-card:hover { border-color: #6366f1; transform: translateY(-1px); }
+    .perm-card:hover { border-color: #6366f1; transform: translateY(-1px); background: var(--surface-2); }
     .perm-card input:checked + .perm-content { color: #4f46e5; font-weight: 600; }
     .perm-content { color: #4b5563; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
 
     .form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px; }
-    .btn-cancel { background: white; border: 1px solid #d1d5db; color: #374151; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
-    .btn-submit { background: #111827; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-    .btn-submit:hover { background: #000; }
+    .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+    .btn-submit { background: var(--text-color); color: var(--surface-1); border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 0.95rem; white-space: nowrap; transition: opacity 0.2s; }
+    .btn-submit:hover { opacity: 0.9; }
 
     /* Table Styles */
     .card-header-styled {
-        background: #f9fafb; padding: 15px 20px; border-bottom: 1px solid #e5e7eb;
+        background: var(--surface-3); padding: 15px 20px; border-bottom: 1px solid var(--border);
     }
-    .card-header-styled h3 { margin: 0; color: #374151; font-size: 1.1rem; }
+    .card-header-styled h3 { margin: 0; color: var(--text-color); font-size: 1.1rem; }
     
-    table thead th { background: #f3f4f6 !important; color: #374151 !important; font-weight: 600 !important; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
-    table tbody tr:hover { background: #f9fafb; }
+    table thead th { background: var(--surface-3) !important; color: var(--text-muted) !important; font-weight: 700 !important; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+    table tbody tr:hover { background: var(--surface-3); }
     
-    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-    .badge-purple { background: #e0e7ff; color: #4338ca; }
-    .badge-blue { background: #e0f2fe; color: #0284c7; }
-    .badge-green { background: #dcfce7; color: #166534; }
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; border: 1px solid rgba(0,0,0,0.05); }
+    .badge-purple { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+    .badge-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
 
     .btn-icon { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 5px; border-radius: 4px; transition: background 0.2s; }
     .btn-icon.delete { color: #ef4444; }
@@ -328,6 +330,10 @@ function togglePermissions() {
     
     @media (max-width: 768px) {
         .form-grid { grid-template-columns: 1fr; }
+        .admin-form-card { padding: 20px 15px; }
+        .btn-submit { font-size: 0.85rem; padding: 10px; width: 100%; }
+        .form-actions { flex-direction: column-reverse; }
+        .btn-cancel { width: 100%; }
     }
 </style>
 

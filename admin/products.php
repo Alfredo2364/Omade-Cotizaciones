@@ -118,16 +118,15 @@ if (isset($_GET['edit'])) {
 ?>
 
 <!-- Action Bar & Search -->
-<div class="card" style="padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e2e8f0;">
+<div class="card" style="padding: 20px; background: var(--surface-2); border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 25px; border: 1px solid var(--border);">
     <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
         
         <!-- Search Input with POS Style -->
         <div style="position: relative; flex: 2; min-width: 300px;">
-            <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1rem;"></i>
+            <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
             <input type="text" id="productSearch" placeholder="Buscar producto por nombre, código o categoría..." 
                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                   style="width: 100%; padding: 14px 14px 14px 45px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; outline: none; transition: all 0.2s;">
-            <!-- Instant Results Dropdown (Optional improvement for later, for now we search standardly or via JS filter if we want) -->
+                   style="width: 100%; padding: 14px 14px 14px 45px; background: var(--surface-3); border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; color: var(--text-color); outline: none; transition: all 0.2s;">
         </div>
 
         <!-- Action Buttons -->
@@ -230,10 +229,10 @@ if (isset($_GET['edit'])) {
 </div>
 
 <!-- Products Table Container -->
-<div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
-     <div class="card-header-styled" style="background: white; padding: 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px; color: #1e293b;">
-            <i class="fas fa-boxes" style="color: #3b82f6; background: #eff6ff; padding: 8px; border-radius: 8px;"></i> 
+<div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--card-shadow);">
+     <div class="card-header-styled" style="background: var(--surface-3); padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px; color: var(--text-color);">
+            <i class="fas fa-boxes" style="color: var(--primary-color); background: var(--surface-2); padding: 8px; border-radius: 8px; border: 1px solid var(--border);"></i> 
             Inventario de Productos
         </h3>
     </div>
@@ -299,7 +298,7 @@ if (isset($_GET['edit'])) {
                 <tr class="product-row-anim">
                     <td style="padding-left: 20px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; background: #f8fafc; display: flex; align-items: center; justify-content: center;">
+                            <div style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-3); display: flex; align-items: center; justify-content: center;">
                                 <?php if(!empty($p['image'])): ?>
                                     <img src="../<?= $p['image'] ?>" style="width: 100%; height: 100%; object-fit: cover;">
                                 <?php else: ?>
@@ -307,43 +306,43 @@ if (isset($_GET['edit'])) {
                                 <?php endif; ?>
                             </div>
                             <div>
-                                <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;"><?= htmlspecialchars($p['name']) ?></div>
+                                <div style="font-weight: 600; color: var(--text-color); font-size: 0.95rem;"><?= htmlspecialchars($p['name']) ?></div>
                                 <?php if($p['description']): ?>
-                                    <div style="font-size: 0.8rem; color: #94a3b8; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <div style="font-size: 0.8rem; color: var(--muted); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         <?= htmlspecialchars($p['description']) ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </td>
-                    <td style="color: #64748b; font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($p['product_code'] ?? '-') ?></td>
-                    <td style="font-weight: 700; color: #15803d; font-size: 1rem;">$<?= number_format($p['price'], 2) ?></td>
+                    <td style="color: var(--muted); font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($p['product_code'] ?? '-') ?></td>
+                    <td style="font-weight: 700; color: var(--secondary-color); font-size: 1rem;">$<?= number_format($p['price'], 2) ?></td>
                     <td>
                         <?php if($p['stock'] < 5): ?>
-                            <span style="color: #ef4444; font-weight: 700; background: #fee2e2; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem;">
-                                <?= $p['stock'] ?> (Bajo)
+                            <span class="badge badge-stock-low">
+                                <i class="fas fa-exclamation-triangle"></i> <?= $p['stock'] ?> - Bajo
                             </span>
                         <?php else: ?>
-                             <span style="color: #334155; font-weight: 600;">
+                             <span style="color: var(--text-color); font-weight: 600;">
                                 <?= $p['stock'] ?> u.
                             </span>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <span class="badge" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">
+                        <span class="badge" style="background: var(--surface-3); color: var(--muted); border: 1px solid var(--border);">
                             <?= htmlspecialchars($p['category'] ?? 'General') ?>
                         </span>
                     </td>
                     <td>
                         <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                             <?php if($p['in_carousel']): ?>
-                                <span class="badge" style="background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">Oferta</span>
+                                <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.2);">Oferta</span>
                             <?php endif; ?>
                             <?php if($p['pos_favorite']): ?>
-                                <span class="badge" style="background: #fef3c7; color: #d97706; border: 1px solid #fde68a;">POS ★</span>
+                                <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2);">POS ★</span>
                             <?php endif; ?>
                             <?php if(!$p['in_carousel'] && !$p['pos_favorite']): ?>
-                                <span class="badge" style="background: white; color: #94a3b8; border: 1px solid #e2e8f0;">Normal</span>
+                                <span class="badge" style="background: var(--surface-3); color: var(--muted); border: 1px solid var(--border);">Normal</span>
                             <?php endif; ?>
                         </div>
                     </td>
@@ -403,20 +402,20 @@ searchInput.addEventListener('blur', () => searchInput.parentElement.style.trans
 <style>
     /* Button Styles */
     .btn-new-product {
-        background: #1e293b; color: white; border: none; padding: 12px 25px; border-radius: 10px;
-        cursor: pointer; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.3);
+        background: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 10px;
+        cursor: pointer; font-weight: 600; box-shadow: var(--card-shadow);
         display: flex; align-items: center; gap: 8px; transition: all 0.2s;
     }
-    .btn-new-product:hover { background: #334155; transform: translateY(-2px); }
+    .btn-new-product:hover { opacity: 0.9; transform: translateY(-2px); }
     
     .btn-import {
-        background: #fff; color: #10b981; border: 1px solid #10b981; padding: 12px 20px; border-radius: 10px;
+        background: var(--surface-2); color: #10b981; border: 1px solid #10b981; padding: 12px 20px; border-radius: 10px;
         text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.2s;
     }
-    .btn-import:hover { background: #ecfdf5; }
+    .btn-import:hover { background: rgba(16, 185, 129, 0.1); }
 
     /* Search Input Focus */
-    #productSearch:focus { border-color: #3b82f6 !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+    #productSearch:focus { border-color: #3b82f6 !important; background: var(--surface-2) !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
 
     /* Form Container */
     .form-container {
@@ -427,8 +426,8 @@ searchInput.addEventListener('blur', () => searchInput.parentElement.style.trans
     .form-container.open { max-height: 1200px; opacity: 1; margin-bottom: 30px; }
 
     .form-card {
-        background: white; padding: 30px; border-radius: 12px;
-        border: 1px solid #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        background: var(--surface-2); padding: 30px; border-radius: 12px;
+        border: 1px solid var(--border); box-shadow: var(--card-shadow);
         position: relative; overflow: hidden;
     }
     .form-card::before {
@@ -436,49 +435,49 @@ searchInput.addEventListener('blur', () => searchInput.parentElement.style.trans
         background: linear-gradient(90deg, #10b981, #3b82f6);
     }
     
-    .form-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 25px; }
-    .form-header h3 { margin: 0; color: #0f172a; font-size: 1.25rem; }
+    .form-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; }
+    .form-header h3 { margin: 0; color: var(--text-color); font-size: 1.25rem; }
 
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: 0.2s; }
-    .form-control:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); background: var(--surface-3); color: var(--text-color); border-radius: 8px; outline: none; transition: 0.2s; }
+    .form-control:focus { border-color: #3b82f6; background: var(--surface-2); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
     
-    label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; font-size: 0.9rem; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; }
 
     /* Discount Panel */
-    .discount-panel { background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px dashed #cbd5e1; }
-    .panel-label { color: #2563eb; font-weight: 700; margin-bottom: 15px; }
+    .discount-panel { background: var(--surface-3); padding: 20px; border-radius: 8px; border: 1px dashed var(--border); }
+    .panel-label { color: var(--secondary-color); font-weight: 700; margin-bottom: 15px; }
     .discount-grid { display: flex; gap: 20px; }
 
     /* Checkboxes */
-    .checkbox-group { display: flex; align-items: center; gap: 10px; background: #f1f5f9; padding: 12px; border-radius: 8px; }
+    .checkbox-group { display: flex; align-items: center; gap: 10px; background: var(--surface-3); padding: 12px; border-radius: 8px; color: var(--text-color); }
     .checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
     .checkbox-group label { margin: 0; cursor: pointer; }
 
     /* Actions */
     .form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
-    .btn-submit { background: #0f172a; color: white; padding: 12px 30px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .btn-submit:hover { background: #1e293b; transform: translateY(-2px); }
-    .btn-cancel { background: white; border: 1px solid #cbd5e1; color: #64748b; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: 500; }
-    .btn-cancel:hover { background: #f8fafc; color: #475569; }
+    .btn-submit { background: var(--primary-color); color: white; padding: 12px 30px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-cancel { background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: 500; }
+    .btn-cancel:hover { background: var(--surface-1); color: var(--text-color); }
 
     /* Table Override */
     table { width: 100%; border-collapse: separate; border-spacing: 0; }
     table th { 
-        background: #f8fafc !important; color: #64748b !important; 
+        background: var(--surface-3) !important; color: var(--text-muted) !important; 
         text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; 
-        padding: 15px; border-bottom: 1px solid #e2e8f0; 
+        padding: 15px; border-bottom: 1px solid var(--border); 
     }
-    table td { border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    .product-row-anim:hover { background: #f8fafc; }
+    table td { border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .product-row-anim:hover { background: var(--surface-3); }
     
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
     
     .btn-icon { width: 32px; height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; text-decoration: none; }
-    .btn-edit { background: #fffbeb; color: #f59e0b; }
-    .btn-edit:hover { background: #fef3c7; }
-    .btn-delete { background: #fef2f2; color: #ef4444; }
-    .btn-delete:hover { background: #fee2e2; }
+    .btn-edit { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .btn-edit:hover { background: rgba(245, 158, 11, 0.2); }
+    .btn-delete { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .btn-delete:hover { background: rgba(239, 68, 68, 0.2); }
 
     /* ---- Mobile Responsive ---- */
     @media (max-width: 1024px) {
@@ -493,6 +492,19 @@ searchInput.addEventListener('blur', () => searchInput.parentElement.style.trans
         .form-actions { flex-direction: column; }
         .btn-submit, .btn-cancel { width: 100%; text-align: center; justify-content: center; }
         table th, table td { font-size: 0.8rem; padding: 8px 10px; }
+    }
+    .badge-stock-low {
+        background: rgba(239, 68, 68, 0.1) !important;
+        color: #ef4444 !important;
+        border: 1px solid rgba(239, 68, 68, 0.2) !important;
+        padding: 4px 12px !important;
+        border-radius: 6px !important; /* Linear look */
+        font-size: 0.75rem !important;
+        white-space: nowrap !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-weight: 600 !important;
     }
 </style>
 

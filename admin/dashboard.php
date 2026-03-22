@@ -52,10 +52,10 @@ $stats['orders'] = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-top: 30px;">
     <div class="card-header-styled">
         <div style="display: flex; align-items: center; gap: 10px;">
-            <div style="width: 32px; height: 32px; background: #fff7ed; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ea580c;">
+            <div style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary-color);">
                 <i class="fas fa-history"></i>
             </div>
-            <h3 style="margin: 0; font-size: 1.1rem; color: #1f2937;">Últimos movimientos registrados</h3>
+            <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-color);">Últimos movimientos registrados</h3>
         </div>
     </div>
     
@@ -77,15 +77,15 @@ $stats['orders'] = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
                     <tr>
                         <td>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <div style="width: 24px; height: 24px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4338ca; font-size: 0.7rem; font-weight: bold;">
+                                <div style="width: 24px; height: 24px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 0.75rem; font-weight: 700; border: 1px solid var(--border);">
                                     <?= strtoupper(substr($log['name'], 0, 1)) ?>
                                 </div>
-                                <span style="font-weight: 500; color: #374151;"><?= htmlspecialchars($log['name']) ?></span>
+                                <span style="font-weight: 600; color: var(--text-color);"><?= htmlspecialchars($log['name']) ?></span>
                             </div>
                         </td>
                         <td><span class="badge-action"><?= htmlspecialchars($log['action']) ?></span></td>
-                        <td style="color: #6b7280;"><?= htmlspecialchars($log['details']) ?></td>
-                        <td style="color: #9ca3af; font-size: 0.85rem;"><?= date('d/m H:i', strtotime($log['created_at'])) ?></td>
+                        <td style="color: var(--text-muted);"><?= htmlspecialchars($log['details']) ?></td>
+                        <td style="color: var(--text-muted); opacity: 0.7; font-size: 0.85rem;"><?= date('d/m H:i', strtotime($log['created_at'])) ?></td>
                     </tr>
                     <?php endforeach; 
                 } else {
@@ -107,15 +107,15 @@ $stats['orders'] = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
     }
 
     .stat-card {
-        background: white;
+        background: var(--surface-2);
         border-radius: 12px;
         padding: 20px;
         display: flex;
         align-items: center;
         gap: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        box-shadow: var(--card-shadow);
         transition: transform 0.2s, box-shadow 0.2s;
-        border: 1px solid rgba(0,0,0,0.05);
+        border: 1px solid var(--border);
     }
     .stat-card:hover {
         transform: translateY(-3px);
@@ -137,56 +137,56 @@ $stats['orders'] = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
     }
     .stat-label {
         font-size: 0.9rem;
-        color: #6b7280;
+        color: var(--text-muted);
         font-weight: 500;
     }
     .stat-number {
         font-size: 1.8rem;
         font-weight: 700;
         line-height: 1.2;
-        color: #111827;
+        color: var(--text-color);
     }
 
-    /* Card Themes */
-    .card-blue .stat-icon { background: #eff6ff; color: #3b82f6; }
-    .card-green .stat-icon { background: #f0fdf4; color: #22c55e; }
-    .card-purple .stat-icon { background: #faf5ff; color: #a855f7; }
-    .card-orange .stat-icon { background: #fff7ed; color: #f97316; }
+    /* Card Themes - Using translucent RGBA for perfect theme integration */
+    .card-blue .stat-icon { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+    .card-green .stat-icon { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+    .card-purple .stat-icon { background: rgba(168, 85, 247, 0.12); color: #a855f7; }
+    .card-orange .stat-icon { background: rgba(249, 115, 22, 0.12); color: #f97316; }
 
     /* Table Styles */
     .card-header-styled {
-        background: #f9fafb;
+        background: var(--surface-3);
         padding: 15px 25px;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--border);
     }
     
     .table-container table thead th {
-        background: #f3f4f6;
-        color: #4b5563;
-        font-weight: 600;
+        background: var(--surface-3);
+        color: var(--text-muted);
+        font-weight: 700;
         text-transform: uppercase;
         font-size: 0.75rem;
         letter-spacing: 0.05em;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--border);
     }
     .table-container table tbody tr {
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid var(--border);
     }
     .table-container table tbody tr:last-child {
         border-bottom: none;
     }
     .table-container table tbody tr:hover {
-        background: #f9fafb;
+        background: var(--surface-3);
     }
 
     .badge-action {
-        background: #f3f4f6;
-        color: #4b5563;
+        background: var(--surface-3);
+        color: var(--text-color);
         padding: 4px 8px;
         border-radius: 6px;
         font-size: 0.75rem;
         font-weight: 600;
-        border: 1px solid #e5e7eb;
+        border: 1px solid var(--border);
     }
 
     /* Mobile - Tablet */

@@ -6,7 +6,7 @@
 </div>
 
 <!-- Filters Card -->
-<div class="card" style="margin-bottom: 25px; padding: 25px; border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+<div class="card" style="margin-bottom: 25px; padding: 25px; border: 1px solid var(--border); box-shadow: var(--card-shadow); background: var(--surface-2);">
     <form method="GET" class="filters-form">
         <div class="filter-group grow">
             <label>Buscar Pedido</label>
@@ -36,7 +36,7 @@
 </div>
 
 <!-- Orders Table Card -->
-<div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);">
+<div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--card-shadow); background: var(--surface-2);">
     <div class="table-container">
         <table class="table-premium">
             <thead>
@@ -106,7 +106,7 @@
 
                 foreach ($orders as $o): ?>
                 <tr>
-                    <td style="font-family: monospace; font-weight: 600; color: #64748b;">
+                    <td style="font-family: monospace; font-weight: 600; color: var(--muted);">
                         #<?= str_pad($o['id'], 5, '0', STR_PAD_LEFT) ?>
                     </td>
                     <td>
@@ -118,17 +118,17 @@
                             <span style="color: #cbd5e1;">-</span>
                         <?php endif; ?>
                     </td>
-                    <td style="font-weight: 600; color: #1e293b;"><?= htmlspecialchars($o['client_name']) ?></td>
-                    <td style="color: #64748b; font-size: 0.9rem;"><?= htmlspecialchars($o['seller_name'] ?? 'Sistema') ?></td>
-                    <td style="color: #64748b; font-size: 0.85rem;">
+                    <td style="font-weight: 600; color: var(--text-color);"><?= htmlspecialchars($o['client_name']) ?></td>
+                    <td style="color: var(--muted); font-size: 0.9rem;"><?= htmlspecialchars($o['seller_name'] ?? 'Sistema') ?></td>
+                    <td style="color: var(--muted); font-size: 0.85rem;">
                         <i class="far fa-clock" style="margin-right: 4px; opacity: 0.7;"></i>
                         <?= date('d M, Y', strtotime($o['created_at'])) ?>
-                        <span style="color: #94a3b8; font-size: 0.75rem; margin-left: 3px;"><?= date('H:i', strtotime($o['created_at'])) ?></span>
+                        <span style="color: var(--muted); opacity: 0.8; font-size: 0.75rem; margin-left: 3px;"><?= date('H:i', strtotime($o['created_at'])) ?></span>
                     </td>
                     <td>
                         <span class="badge-success"><i class="fas fa-check"></i> Completado</span>
                     </td>
-                    <td style="font-weight: 700; color: #059669; font-size: 1rem;">$<?= number_format($o['total'], 2) ?></td>
+                    <td style="font-weight: 700; color: var(--secondary-color); font-size: 1rem;">$<?= number_format($o['total'], 2) ?></td>
                     <td style="text-align: right;">
                         <div style="display: inline-flex; gap: 8px;">
                             <a href="print_ticket.php?type=order&id=<?= $o['id'] ?>" target="_blank" class="btn-icon" title="Imprimir Factura">
@@ -170,52 +170,52 @@
     /* Premium Design Styles */
     .filters-form { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
     .filter-group { display: flex; flex-direction: column; gap: 8px; }
-    .filter-group label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .filter-group label { font-weight: 600; color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
     .grow { flex: 1; min-width: 250px; }
     
     .input-icon { position: relative; }
     .input-icon i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
     .input-icon input { 
-        width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #e2e8f0; 
-        border-radius: 10px; outline: none; transition: 0.2s; background: #f8fafc; color: #1e293b;
+        width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border); 
+        border-radius: 10px; outline: none; transition: 0.2s; background: var(--surface-3); color: var(--text-color);
     }
-    .input-icon input:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .input-icon input:focus { border-color: #3b82f6; background: var(--surface-2); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
 
     .filter-actions { display: flex; gap: 10px; margin-left: auto; }
     .btn-filter { 
-        background: #0f172a; color: white; border: none; padding: 0 25px; 
+        background: var(--primary-color); color: white; border: 1px solid var(--border); padding: 0 25px; 
         height: 45px; border-radius: 10px; font-weight: 600; cursor: pointer; 
         display: flex; align-items: center; gap: 8px; transition: 0.2s;
     }
-    .btn-filter:hover { background: #1e293b; transform: translateY(-1px); }
+    .btn-filter:hover { background: var(--surface-3); transform: translateY(-1px); }
     
     .btn-clear {
-        background: white; border: 1px solid #e2e8f0; color: #64748b; padding: 0 20px;
+        background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); padding: 0 20px;
         height: 45px; border-radius: 10px; font-weight: 600; cursor: pointer;
         display: flex; align-items: center; gap: 8px; text-decoration: none; transition: 0.2s;
     }
-    .btn-clear:hover { background: #f1f5f9; color: #ef4444; border-color: #fee2e2; }
+    .btn-clear:hover { background: var(--surface-3); color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
 
     /* Table Styles */
     .table-premium { width: 100%; border-collapse: separate; border-spacing: 0; }
     .table-premium thead th { 
-        background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; 
+        background: var(--surface-3); color: var(--muted); font-weight: 700; text-transform: uppercase; 
         font-size: 0.75rem; letter-spacing: 0.5px; padding: 15px 20px; 
-        text-align: left; border-bottom: 1px solid #e2e8f0; 
+        text-align: left; border-bottom: 1px solid var(--border); 
     }
     .table-premium tbody tr { transition: background 0.15s; }
-    .table-premium tbody tr:hover { background: #f8fafc; }
+    .table-premium tbody tr:hover { background: var(--surface-3); }
     .table-premium td { 
-        padding: 15px 20px; border-bottom: 1px solid #f1f5f9; 
-        vertical-align: middle; color: #334155; 
+        padding: 15px 20px; border-bottom: 1px solid var(--border); 
+        vertical-align: middle; color: var(--text-color); 
     }
     
     .link-quote { 
         color: #3b82f6; text-decoration: none; font-weight: 500; 
-        padding: 2px 8px; background: #eff6ff; border-radius: 4px; 
+        padding: 2px 8px; background: rgba(59, 130, 246, 0.1); border-radius: 4px; 
         transition: 0.2s; font-size: 0.85rem;
     }
-    .link-quote:hover { background: #dbeafe; text-decoration: underline; }
+    .link-quote:hover { background: rgba(59, 130, 246, 0.2); text-decoration: underline; }
 
     .badge-success { 
         background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; 
@@ -235,18 +235,18 @@
 
     /* Pagination */
     .pagination-container { 
-        padding: 20px 25px; border-top: 1px solid #f1f5f9; background: #fff; 
+        padding: 20px 25px; border-top: 1px solid var(--border); background: var(--surface-2); 
         display: flex; justify-content: space-between; align-items: center; 
     }
-    .pagination-info { font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
+    .pagination-info { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
     .pagination { display: flex; gap: 5px; }
     .pagination a { 
         width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; 
-        border-radius: 8px; border: 1px solid #e2e8f0; color: #64748b; 
+        border-radius: 8px; border: 1px solid var(--border); color: var(--muted); 
         text-decoration: none; transition: 0.2s; font-size: 0.9rem; 
     }
-    .pagination a:hover { background: #f8fafc; border-color: #cbd5e1; color: #1e293b; }
-    .pagination a.active { background: #0f172a; color: white; border-color: #0f172a; }
+    .pagination a:hover { background: var(--surface-3); border-color: var(--muted); color: var(--text-color); }
+    .pagination a.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
 
     @media (max-width: 1024px) {
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }

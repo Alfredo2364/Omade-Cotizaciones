@@ -10,7 +10,7 @@
                     <p>Gestiona tus pedidos, consulta nuestro catálogo de refacciones y solicita cotizaciones personalizadas en un solo lugar.</p>
                     <div style="display: flex; gap: 15px;">
                         <a href="?tab=products" class="btn-cta"><i class="fas fa-search"></i> Ver Catálogo</a>
-                        <a href="?tab=quotes&action=new" class="btn-cta" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); box-shadow: none;">Nueva Cotización</a>
+                        <a href="?tab=quotes&action=new" class="btn-cta" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); box-shadow: none; border: 1px solid rgba(255,255,255,0.1);">Nueva Cotización</a>
                     </div>
                 </div>
                 <div class="hero-decoration">
@@ -32,13 +32,13 @@
                         
                         if (empty($slides)) {
                              for($i=1; $i<=3; $i++) {
-                                 echo '<div class="carousel-card-premium" style="text-align: center; border-style: dashed; border-color: #cbd5e1; background: #f8fafc;">
-                                        <div class="premium-img-container" style="background: transparent;">
-                                            <i class="fas fa-rocket" style="font-size: 3.5rem; color: #94a3b8; opacity: 0.5;"></i>
+                                 echo '<div class="carousel-card-premium" style="text-align: center; border-style: dashed; border-color: var(--border); background: var(--surface-3);">
+                                         <div class="premium-img-container" style="background: var(--surface-3); opacity: 0.6;">
+                                            <i class="fas fa-rocket" style="font-size: 3.5rem; color: var(--text-muted);"></i>
                                         </div>
                                         <div class="premium-card-body">
-                                            <h4 style="color: #64748b; font-size: 1.2rem; margin-bottom: 10px;">¡Próximamente!</h4>
-                                            <p style="font-size: 0.95rem;">Estamos preparando ofertas increíbles para ti. Mantente al tanto.</p>
+                                            <h4 style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 8px;">¡Próximamente!</h4>
+                                            <p style="font-size: 0.9rem; color: var(--text-muted);">Estamos preparando ofertas increíbles para ti.</p>
                                         </div>
                                        </div>';
                              }
@@ -64,13 +64,13 @@
                             // Fill remaining slots if less than 5
                             $remaining = 5 - count($slides);
                             for($i=0; $i<$remaining; $i++) {
-                                 echo '<div class="carousel-card-premium" style="text-align: center; border-style: dashed; border-color: #cbd5e1; background: #f8fafc;">
+                                 echo '<div class="carousel-card-premium" style="text-align: center; border-style: dashed; border-color: var(--border); background: var(--surface-3);">
                                         <div class="premium-img-container" style="background: transparent;">
-                                            <i class="fas fa-rocket" style="font-size: 3.5rem; color: #94a3b8; opacity: 0.5;"></i>
+                                            <i class="fas fa-rocket" style="font-size: 3.5rem; color: var(--text-muted); opacity: 0.5;"></i>
                                         </div>
                                         <div class="premium-card-body">
-                                            <h4 style="color: #64748b; font-size: 1.2rem; margin-bottom: 10px;">¡Próximamente!</h4>
-                                            <p style="font-size: 0.95rem;">Estamos preparando más ofertas. Mantente al tanto.</p>
+                                            <h4 style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 10px;">¡Próximamente!</h4>
+                                            <p style="font-size: 0.95rem; color: var(--text-muted);">Estamos preparando más ofertas. Mantente al tanto.</p>
                                         </div>
                                        </div>';
                             }

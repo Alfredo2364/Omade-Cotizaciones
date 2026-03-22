@@ -11,14 +11,14 @@ if ($_SESSION['role'] !== 'super_admin') {
 </div>
 
 <div class="card" style="padding: 0; border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-    <div class="table-container" style="box-shadow: none; border-radius: 12px; overflow: hidden;">
-        <table>
-            <thead style="background: #0056b3; color: white;">
-                <tr>
-                    <th style="padding: 15px; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Usuario</th>
-                    <th style="padding: 15px; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Acción</th>
-                    <th style="padding: 15px; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Detalles</th>
-                    <th style="padding: 15px; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Fecha y Hora</th>
+    <div class="table-container" style="box-shadow: var(--card-shadow); border-radius: 12px; overflow-x: auto; border: 1px solid var(--border); -webkit-overflow-scrolling: touch;">
+        <table style="width: 100%; min-width: 800px; border-collapse: collapse;">
+            <thead>
+                <tr style="background: var(--surface-3); border-bottom: 2px solid var(--border);">
+                    <th style="padding: 15px; text-align: left; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Usuario</th>
+                    <th style="padding: 15px; text-align: left; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Acción</th>
+                    <th style="padding: 15px; text-align: left; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Detalles</th>
+                    <th style="padding: 15px; text-align: left; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Fecha y Hora</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,13 +67,13 @@ if ($_SESSION['role'] !== 'super_admin') {
                             $badgeClass = 'badge-blue';
                     }
                 ?>
-                <tr style="border-bottom: 1px solid #f1f5f9;">
+                <tr style="border-bottom: 1px solid var(--border);">
                     <td style="padding: 15px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #64748b; font-weight: bold; font-size: 0.8rem;">
+                            <div style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-weight: 700; font-size: 0.8rem; border: 1px solid var(--border);">
                                 <?= strtoupper(substr($log['name'], 0, 1)) ?>
                             </div>
-                            <span style="font-weight: 500; color: #334155;"><?= htmlspecialchars($log['name']) ?></span>
+                            <span style="font-weight: 600; color: var(--text-color);"><?= htmlspecialchars($log['name']) ?></span>
                         </div>
                     </td>
                     <td style="padding: 15px;">
@@ -81,8 +81,8 @@ if ($_SESSION['role'] !== 'super_admin') {
                             <i class="fas <?= $icon ?>"></i> <?= $friendlyAction ?>
                         </span>
                     </td>
-                    <td style="padding: 15px; color: #475569; font-size: 0.95rem;"><?= htmlspecialchars($log['details']) ?></td>
-                    <td style="padding: 15px; color: #64748b; font-size: 0.85rem;">
+                    <td style="padding: 15px; color: var(--text-color); font-size: 0.95rem;"><?= htmlspecialchars($log['details']) ?></td>
+                    <td style="padding: 15px; color: var(--text-muted); font-size: 0.85rem;">
                         <i class="far fa-clock" style="margin-right: 5px;"></i>
                         <?= date('d/m/Y h:i A', strtotime($log['created_at'])) ?>
                     </td>
@@ -97,14 +97,14 @@ if ($_SESSION['role'] !== 'super_admin') {
     /* Custom Badges for Logs */
     .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; }
     
-    .badge-blue { background: #eff6ff; color: #2563eb; }
-    .badge-green { background: #f0fdf4; color: #16a34a; }
-    .badge-purple { background: #f3e8ff; color: #9333ea; }
-    .badge-indigo { background: #e0e7ff; color: #4f46e5; }
-    .badge-gray { background: #f8fafc; color: #64748b; }
+    .badge-blue { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
+    .badge-green { background: rgba(22, 163, 74, 0.1); color: #4ade80; }
+    .badge-purple { background: rgba(147, 51, 234, 0.1); color: #c084fc; }
+    .badge-indigo { background: rgba(79, 70, 229, 0.1); color: #818cf8; }
+    .badge-gray { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
 
     /* Enhance table row hover */
-    tbody tr:hover { background-color: #f8fafc; transition: background-color 0.2s; }
+    tbody tr:hover { background-color: var(--surface-3); transition: background-color 0.2s; }
 </style>
 
 </body>

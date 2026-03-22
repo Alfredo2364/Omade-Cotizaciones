@@ -14,7 +14,7 @@
 
         <!-- Quick Favorites Grid -->
         <div class="products-grid-container" style="z-index: 1;">
-            <h4 style="margin: 0 0 15px 0; color: #64748b; font-weight: 600;">Favoritos Rápidos</h4>
+            <h4 style="margin: 0 0 15px 0; color: var(--muted); font-weight: 600;">Favoritos Rápidos</h4>
             <div class="products-grid" id="products-grid">
                 <?php
                 // Fetch Favorites
@@ -33,7 +33,7 @@
                     $price = $p['price'] ?? 0;
                     $image = $p['image'] ?? '';
                     
-                    $img = !empty($image) ? '../' . $image : '../assets/img/no-image.png';
+                    $img = !empty($image) ? '../' . $image : 'https://via.placeholder.com/100?text=Sin+Img';
                     $cleanName = addslashes($name);
                     
                     // htmlspecialchars needs non-null
@@ -57,7 +57,7 @@
                         echo renderProductCard($p);
                     }
                 } else {
-                    echo "<p style='color:#94a3b8; padding:10px;'>No hay favoritos configurados</p>";
+                    echo "<p style='color:var(--muted); padding:10px;'>No hay favoritos configurados</p>";
                 }
                 ?>
             </div>
@@ -274,7 +274,7 @@ async function checkout() {
     /* Seller + Client meta row */
     .cart-meta-row {
         padding: 10px 15px;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border);
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -284,24 +284,25 @@ async function checkout() {
         align-items: center;
         gap: 8px;
         font-size: 0.82rem;
-        color: #64748b;
+        color: var(--text-muted);
     }
-    .cart-meta-item i { color: #94a3b8; font-size: 0.9rem; flex-shrink: 0; }
-    .cart-meta-item strong { color: #0f172a; }
+    .cart-meta-item i { color: var(--muted); font-size: 0.9rem; flex-shrink: 0; }
+    .cart-meta-item strong { color: var(--text-color); }
     .cart-client-input {
         display: flex;
         align-items: center;
-        gap: 8px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        gap: 10px;
+        background: var(--surface-3);
+        border: 1px solid rgba(255,255,255,0.12); /* More visible border */
         border-radius: 8px;
-        padding: 7px 10px;
-        transition: border-color 0.2s;
+        padding: 8px 12px;
+        transition: all 0.2s ease;
+        margin-top: 5px;
     }
     .cart-client-input:focus-within {
         border-color: #3b82f6;
-        background: white;
-        box-shadow: 0 0 0 2px rgba(59,130,246,0.12);
+        background: var(--surface-2);
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
     }
     .cart-client-input i { color: #94a3b8; font-size: 0.9rem; flex-shrink: 0; }
     .cart-client-input input {
@@ -309,41 +310,41 @@ async function checkout() {
         background: transparent;
         outline: none;
         font-size: 0.85rem;
-        color: #0f172a;
+        color: var(--text-color);
         width: 100%;
         padding: 0;
     }
-    .cart-client-input input::placeholder { color: #94a3b8; }
+    .cart-client-input input::placeholder { color: var(--muted); }
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; padding-bottom: 20px; }
     .product-card {
-        background: white; border-radius: 10px; cursor: pointer;
-        border: 1px solid #e2e8f0; display: flex; flex-direction: column;
+        background: var(--surface-2); border-radius: 10px; cursor: pointer;
+        border: 1px solid var(--border); display: flex; flex-direction: column;
         overflow: hidden; height: 150px; transition: transform 0.2s;
     }
     .product-card:hover { transform: translateY(-3px); border-color: #3b82f6; }
-    .product-img { height: 80px; display: flex; align-items: center; justify-content: center; background: #f8fafc; }
+    .product-img { height: 80px; display: flex; align-items: center; justify-content: center; background: var(--surface-3); }
     .product-img img { max-width: 70%; max-height: 80%; object-fit: contain; }
     .product-info { padding: 8px; text-align: center; flex: 1; display:flex; flex-direction:column; justify-content:center;}
-    .product-name { font-size: 0.8rem; font-weight: 600; color: #334155; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .product-price { font-size: 0.9rem; color: #16a34a; font-weight: 700; }
+    .product-name { font-size: 0.8rem; font-weight: 600; color: var(--text-color); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-price { font-size: 0.9rem; color: var(--secondary-color); font-weight: 700; }
 
     /* Cart */
-    .cart-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; }
-    .cart-header { background: #1e293b; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .cart-card { background: var(--surface-2); border-radius: 12px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; height: 100%; border: 1px solid var(--border); }
+    .cart-header { background: var(--surface-3); color: var(--text-color); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
     .cart-items-container { flex: 1; overflow-y: auto; position: relative; }
-    .empty-cart-state { position: absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; }
-    .empty-cart-state i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.5; }
+    .empty-cart-state { position: absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color: var(--text-muted); }
+    .empty-cart-state i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
     
     .cart-table { width: 100%; border-collapse: collapse; }
-    .cart-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    .c-name { font-weight: 500; font-size: 0.85rem; color: #334155; }
-    .c-price { font-size: 0.75rem; color: #64748b; }
-    .col-qty input { width: 35px; padding: 4px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; }
-    .col-total { font-weight: 600; color: #333; text-align: right; font-size: 0.9rem; }
+    .cart-table td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .c-name { font-weight: 500; font-size: 0.85rem; color: var(--text-color); }
+    .c-price { font-size: 0.75rem; color: var(--text-muted); }
+    .col-qty input { width: 35px; padding: 4px; text-align: center; background: var(--surface-3); color: var(--text-color); border: 1px solid var(--border); border-radius: 4px; }
+    .col-total { font-weight: 600; color: var(--text-color); text-align: right; font-size: 0.9rem; }
     .col-action button { background: none; border: none; color: #ef4444; cursor: pointer; }
 
-    .cart-footer { padding: 15px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
-    .cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 700; color: #1e293b; font-size: 1.1rem; }
+    .cart-footer { padding: 15px; background: var(--surface-3); border-top: 1px solid var(--border); }
+    .cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 700; color: var(--text-color); font-size: 1.1rem; }
     .cart-actions { display: flex; flex-direction: column; gap: 8px; }
     .btn-checkout { background: #16a34a; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-cancel-sale { background: white; color: #ef4444; border: 1px solid #ef4444; padding: 8px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }

@@ -64,10 +64,11 @@ $msgs_count = $my_msgs->fetchColumn();
     <!-- Non-blocking fonts -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"></noscript>
-    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <!-- Font Awesome (Local) -->
+    <link rel="stylesheet" href="../assets/vendor/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
-    
+    <!-- Theme Engine: runs before first paint to avoid flash -->
+    <script src="../assets/js/theme.js"></script>
     <script>
         // Global CSRF Token for fetch requests
         const csrfToken = "<?= $_SESSION['csrf_token'] ?>";
@@ -77,22 +78,28 @@ $msgs_count = $my_msgs->fetchColumn();
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_io/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon_io/favicon-16x16.png">
-    <link rel="manifest" href="../assets/favicon_io/site.webmanifest">
+
     <style>
         /* Premium Dashboard Styles */
         :root {
-            --primary: #0f172a;
+            --primary: var(--primary-color);
             --secondary: #2563eb;
             --accent: #6366f1;
-            --background: #f1f5f9;
-            --surface: #ffffff;
-            --text-main: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
+            --background: var(--surface-1);
+            --surface: var(--surface-2);
+            --text-main: var(--text-color);
+            --text-light: var(--text-muted);
+            --border: var(--border);
             --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-sm: var(--card-shadow);
             --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+
+        [data-theme="dark"] .client-navbar { background-color: rgba(30, 41, 59, 0.9) !important; }
+        [data-theme="dark"] .greeting { background: var(--surface-3) !important; }
+        [data-theme="dark"] .btn-logout { background: rgba(239, 68, 68, 0.1) !important; }
+        [data-theme="dark"] .bottom-nav { background: var(--surface-2) !important; border-top-color: var(--border) !important; }
+        [data-theme="dark"] .bottom-nav a.active { background: var(--surface-3) !important; }
 
         body { background-color: var(--background); color: var(--text-main); font-family: 'Inter', sans-serif; }
         
@@ -149,7 +156,7 @@ $msgs_count = $my_msgs->fetchColumn();
 
         /* Premium Cards */
         .premium-card {
-            background: white; border-radius: 16px; padding: 24px;
+            background: var(--surface-2); border-radius: 16px; padding: 24px;
             border: 1px solid var(--border); box-shadow: var(--shadow-sm);
             transition: box-shadow 0.2s, transform 0.2s;
         }
@@ -168,10 +175,10 @@ $msgs_count = $my_msgs->fetchColumn();
             pointer-events: none; transition: color 0.2s;
         }
         .premium-input, .premium-select, .premium-textarea {
-            width: 100%; padding: 12px 16px 12px 45px; /* Added left padding for icon */
+            width: 100%; padding: 12px 16px 12px 45px;
             border: 1px solid var(--border); border-radius: 12px;
             font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text-main);
-            background: white; transition: all 0.2s ease-in-out; box-sizing: border-box;
+            background: var(--surface-3); transition: all 0.2s ease-in-out; box-sizing: border-box;
             box-shadow: var(--shadow-xs);
         }
         .premium-input:focus, .premium-select:focus, .premium-textarea:focus {
@@ -197,12 +204,12 @@ $msgs_count = $my_msgs->fetchColumn();
 
         /* Premium Tables */
         .premium-table-container {
-            background: white; border-radius: 16px; overflow: hidden;
+            background: var(--surface-2); border-radius: 16px; overflow: hidden;
             border: 1px solid var(--border); box-shadow: var(--shadow-sm);
         }
         .premium-table { width: 100%; border-collapse: separate; border-spacing: 0; }
         .premium-table th {
-            background: #f8fafc; padding: 16px 24px; text-align: left;
+            background: var(--surface-3); padding: 16px 24px; text-align: left;
             font-weight: 700; color: var(--text-light); font-size: 0.8rem; 
             text-transform: uppercase; letter-spacing: 0.05em;
             border-bottom: 1px solid var(--border);
@@ -213,7 +220,7 @@ $msgs_count = $my_msgs->fetchColumn();
             transition: background 0.2s;
         }
         .premium-table tr:last-child td { border-bottom: none; }
-        .premium-table tr:hover td { background: #f8fafc; }
+        .premium-table tr:hover td { background: var(--surface-3); }
         
         .status-badge {
             padding: 6px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; 
@@ -233,7 +240,7 @@ $msgs_count = $my_msgs->fetchColumn();
             gap: 24px; margin-bottom: 40px;
         }
         .stat-card-premium {
-            background: white; border-radius: 16px; padding: 24px;
+            background: var(--surface-2); border-radius: 16px; padding: 24px;
             border: 1px solid var(--border); box-shadow: var(--shadow-sm);
             display: flex; align-items: center; gap: 20px; transition: transform 0.2s;
         }
@@ -242,9 +249,9 @@ $msgs_count = $my_msgs->fetchColumn();
             width: 56px; height: 56px; border-radius: 12px; display: flex;
             align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;
         }
-        .icon-blue { background: #eff6ff; color: #3b82f6; }
-        .icon-green { background: #f0fdf4; color: #22c55e; }
-        .icon-purple { background: #f5f3ff; color: #8b5cf6; }
+        .icon-blue { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .icon-green { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+        .icon-purple { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
         .stat-info h3 { margin: 0 0 4px; font-size: 0.9rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
         .stat-info .value { font-size: 1.75rem; font-weight: 700; color: var(--primary); line-height: 1; }
 
@@ -255,7 +262,7 @@ $msgs_count = $my_msgs->fetchColumn();
         }
         .carousel-card-premium {
             min-width: 300px; max-width: 320px; flex-shrink: 0;
-            background: white; border-radius: 16px; overflow: hidden;
+            background: var(--surface-2); border-radius: 16px; overflow: hidden;
             border: 1px solid var(--border); box-shadow: var(--shadow-sm);
             display: flex; flex-direction: column; transition: transform 0.2s;
         }
@@ -279,7 +286,7 @@ $msgs_count = $my_msgs->fetchColumn();
             gap: 24px; margin-top: 40px;
         }
         .action-box {
-            background: white; border-radius: 16px; padding: 32px;
+            background: var(--surface-2); border-radius: 16px; padding: 32px;
             border: 1px solid var(--border); box-shadow: var(--shadow-sm);
             text-align: center; transition: transform 0.2s;
         }
@@ -299,13 +306,13 @@ $msgs_count = $my_msgs->fetchColumn();
         }
         /* Hero Section */
         .welcome-hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: var(--hero-gradient, linear-gradient(135deg, #0f172a 0%, #1e293b 100%));
             border-radius: 24px;
             padding: 60px 40px;
             color: white;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
             margin-bottom: 40px;
             display: flex; align-items: center; justify-content: space-between;
         }
@@ -407,7 +414,7 @@ $msgs_count = $my_msgs->fetchColumn();
             padding: 4px 8px; border-radius: 8px; transition: 0.2s; min-width: 52px;
         }
         .bottom-nav a i { font-size: 1.2rem; }
-        .bottom-nav a.active, .bottom-nav a:hover { color: var(--secondary); background: #eff6ff; }
+        .bottom-nav a.active, .bottom-nav a:hover { color: var(--secondary); background: rgba(37, 99, 235, 0.12); }
         @media (max-width: 600px) { .bottom-nav { display: flex; } }
         .tracker-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -417,10 +424,11 @@ $msgs_count = $my_msgs->fetchColumn();
         }
         .tracker-modal.open { opacity: 1; visibility: visible; }
         .tracker-card {
-            background: white; width: 90%; max-width: 500px;
-            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            background: var(--surface-2); width: 90%; max-width: 500px;
+            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             overflow: hidden; padding: 30px;
+            border: 1px solid var(--border);
         }
         .tracker-modal.open .tracker-card { transform: translateY(0); }
         .tracker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
@@ -429,14 +437,15 @@ $msgs_count = $my_msgs->fetchColumn();
         .timeline { position: relative; margin: 20px 0; padding-left: 30px; }
         .timeline::before {
             content: ''; position: absolute; left: 7px; top: 5px; height: calc(100% - 10px); width: 3px;
-            background: #e2e8f0; border-radius: 3px; z-index: 1;
+            background: var(--border); border-radius: 3px; z-index: 1;
         }
         
         .timeline-step { position: relative; margin-bottom: 25px; }
         .timeline-step:last-child { margin-bottom: 0; }
         .timeline-step .dot {
             position: absolute; left: -30px; top: 2px; width: 17px; height: 17px;
-            border-radius: 50%; background: #e2e8f0; z-index: 2; transition: all 0.3s;
+            border-radius: 50%; background: var(--surface-3); z-index: 2; transition: all 0.3s;
+            border: 2px solid var(--border);
         }
         .timeline-step .content h4 { margin: 0 0 5px; color: #64748b; font-size: 1.05rem; }
         .timeline-step .content p { margin: 0; color: #94a3b8; font-size: 0.85rem; }
@@ -482,6 +491,13 @@ $msgs_count = $my_msgs->fetchColumn();
         <?php endif; ?>
     </a>
     <a href="../api/logout.php" class="nav-btn logout" style="margin-top: auto;">Salir</a>
+
+    <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+        <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Apariencia</span>
+        <button class="theme-btn" data-theme-toggle onclick="toggleTheme(this)" style="color: white; background: rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
 </div>
 
 <script>
@@ -514,6 +530,11 @@ $msgs_count = $my_msgs->fetchColumn();
                     <span style="position: absolute; top: -5px; right: -8px; background: #ef4444; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold;"><?= $msgs_count ?></span>
                 <?php endif; ?>
             </a>
+            
+            <button class="theme-btn" data-theme-toggle onclick="toggleTheme(this)" title="Cambiar modo" style="margin-left: 5px;">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div style="width: 1px; height: 24px; background: var(--border); margin: 0 5px;"></div>
             
             <a href="../api/logout.php" class="btn-logout"><i class="fas fa-sign-out-alt"></i></a>
         </div>

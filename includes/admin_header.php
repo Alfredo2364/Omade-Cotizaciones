@@ -38,40 +38,41 @@ if (empty($_SESSION['csrf_token'])) {
           onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"></noscript>
 
-    <!-- Font Awesome — carga no bloqueante -->
-    <link rel="preload" as="style"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <!-- Font Awesome (Local) -->
+    <link rel="stylesheet" href="../assets/vendor/font-awesome/css/all.min.css">
 
     <!-- CSS local -->
     <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Theme Engine: runs before first paint to avoid flash -->
+    <script src="../assets/js/theme.js"></script>
 
 
     <style>
         /* Admin Specific Overrides */
         * { box-sizing: border-box; }
-        body { display: flex; min-height: 100vh; background: #f4f7f6; font-family: 'Inter', sans-serif; margin: 0; }
+        body { display: flex; min-height: 100vh; background: var(--surface-1); color: var(--text-color); font-family: 'Inter', sans-serif; margin: 0; transition: background 0.3s, color 0.3s; }
         
         /* Sidebar Styling */
         .sidebar {
             width: 280px;
-            background: #0f172a; /* Dark Navy similar to image */
-            color: #ecf0f1;
+            background: var(--surface-2); /* Solid theme background */
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             position: fixed;
             height: 100vh;
             left: 0;
             top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 20000; /* Highest priority */
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            z-index: 999999; /* Higher priority to ensure it covers everything */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-brand {
             padding: 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--border);
             margin-bottom: 20px;
         }
         .sidebar-brand h2 { margin: 0; color: #fff; font-size: 1.4rem; }
@@ -83,7 +84,7 @@ if (empty($_SESSION['csrf_token'])) {
             display: flex;
             align-items: center;
             padding: 12px 15px;
-            color: #cbd5e1;
+            color: var(--muted);
             text-decoration: none;
             border-radius: 6px;
             margin-bottom: 8px;
@@ -94,8 +95,8 @@ if (empty($_SESSION['csrf_token'])) {
         .nav-item i { width: 25px; text-align: center; margin-right: 10px; font-size: 1.1rem; }
         
         .nav-item:hover, .nav-item.active {
-            background: #1e293b;
-            color: #38bdf8; /* Light Blue accent */
+            background: var(--surface-3);
+            color: var(--secondary-color);
             transform: translateX(5px);
         }
         
@@ -108,39 +109,39 @@ if (empty($_SESSION['csrf_token'])) {
             flex: 1;
             padding: 30px;
             width: calc(100% - 280px);
+            background: var(--surface-1); /* Base background */
+            min-height: 100vh;
         }
 
-        .page-header {
-            margin-bottom: 30px;
-        }
         .page-header h1 {
             font-size: 1.8rem;
-            color: #1e293b;
+            color: var(--text-color);
             margin-bottom: 5px;
         }
 
         /* Shared Components */
         .card { 
-            background: #fff; 
+            background: var(--surface-2); 
             border-radius: 10px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+            box-shadow: var(--card-shadow); 
             padding: 25px; 
             margin-bottom: 25px; 
+            color: var(--text-color);
         }
         
         .table-container {
-            background: #fff;
+            background: var(--surface-2);
             border-radius: 10px;
             padding: 0; /* Let table fill */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: var(--card-shadow);
             overflow-x: auto; /* Enable horizontal scrolling for mobile */
         }
         
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f8fafc; color: #475569; font-weight: 600; text-align: left; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; }
-        td { padding: 15px 20px; border-bottom: 1px solid #e2e8f0; color: #1e293b; }
+        th { background: var(--surface-3); color: var(--text-color); font-weight: 600; text-align: left; padding: 15px 20px; border-bottom: 1px solid var(--border); }
+        td { padding: 15px 20px; border-bottom: 1px solid var(--border); color: var(--text-color); }
         tr:last-child td { border-bottom: none; }
-        tr:hover { background: #f8fafc; }
+        tr:hover { background: var(--surface-3); }
 
         .btn-action { padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;}
         .btn-view { background: #3b82f6; color: white; }
@@ -203,14 +204,23 @@ if (empty($_SESSION['csrf_token'])) {
             }
             .sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s ease-in-out;
+                width: 300px; /* Slightly wider drawer for clarity */
             }
             .sidebar.active {
                 transform: translateX(0);
             }
             .mobile-toggle {
-                display: block;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 15px;
+                background: var(--surface-2);
+                border-radius: 8px;
+                margin-bottom: 25px;
+                box-shadow: var(--card-shadow);
+                border: 1px solid var(--border);
             }
+            .mobile-toggle h2 { margin: 0; font-size: 1.1rem; }
             .sidebar-overlay.active {
                 display: block;
             }
@@ -390,16 +400,18 @@ if (isset($_SESSION['flash'])) {
 <div class="sidebar">
     <div class="sidebar-brand">
         <!-- Placeholder for logo if user has one, otherwise text -->
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 15px;">
             <div style="flex: 1; text-align: center;">
-                 <h2>OMADE Admin</h2>
-                 <img src="logo_admin.png" alt="OMADE Logo" style="height: 50px; margin: 10px 0; display: block; margin-left: auto; margin-right: auto;">
-                 <p>Panel de Control</p>
+                 <h2 style="color: var(--text-color); margin-top: 10px;">OMADE Admin</h2>
+                 <img src="../admin/logo_admin.png" alt="OMADE Logo" style="height: 50px; margin: 10px 0; display: block; margin-left: auto; margin-right: auto;">
+                 <p style="color: var(--muted);">Panel de Control</p>
             </div>
             <!-- Close button for mobile -->
-            <i class="fas fa-times" onclick="toggleSidebar()" style="cursor: pointer; font-size: 1.2rem; display: none;" id="mobile-close-btn"></i>
+            <button onclick="toggleSidebar()" style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.5rem; display: none;" id="mobile-close-btn">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <style> @media(max-width: 768px) { #mobile-close-btn { display: block !important; } } </style>
+        <style> @media(max-width: 1024px) { #mobile-close-btn { display: block !important; } } </style>
     </div>
     
     <div class="sidebar-nav">
@@ -461,6 +473,13 @@ if (isset($_SESSION['flash'])) {
     </div>
     
     <div class="sidebar-footer" style="padding: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <!-- Theme Toggle -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 8px 10px; background: var(--surface-3); border-radius: 8px; border: 1px solid var(--border);">
+            <span style="font-size: 0.85rem; color: var(--muted);"><i class="fas fa-palette" style="margin-right: 8px;"></i>Apariencia</span>
+            <button class="theme-btn" data-theme-toggle onclick="toggleTheme(this)" title="Cambiar modo">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
         <a href="../api/logout.php" class="nav-item logout" style="margin: 0; justify-content: flex-start; color: #ef4444;">
             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
         </a>
@@ -471,6 +490,7 @@ if (isset($_SESSION['flash'])) {
 <div class="main-content">
     <div class="mobile-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
+        <h2 style="color: var(--text-color);">Panel de Administración</h2>
     </div>
     <style>
         .sidebar { height: 100dvh; } /* Ensure full height on mobile browsers */

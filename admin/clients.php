@@ -49,14 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_client'])) {
 ?>
 
 <!-- Search Bar & Actions -->
-<div class="card" style="padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e2e8f0;">
+<div class="card" style="padding: 20px; background: var(--surface-2); border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 25px; border: 1px solid var(--border);">
     <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
         
         <!-- Search Input with POS Style -->
         <div style="position: relative; flex: 1; min-width: 300px;">
             <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1rem;"></i>
             <input type="text" id="clientSearch" placeholder="Buscar cliente por nombre o correo..." 
-                   style="width: 100%; padding: 14px 14px 14px 45px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; outline: none; transition: all 0.2s;">
+                   style="width: 100%; padding: 14px 14px 14px 45px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; outline: none; transition: all 0.2s; background: var(--surface-3); color: var(--text-color);">
             <div id="search-spinner" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #3b82f6; display: none;">
                 <i class="fas fa-circle-notch fa-spin"></i>
             </div>
@@ -126,13 +126,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_client'])) {
 </div>
 
 <!-- Clients List Container -->
-<div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
-     <div class="card-header-styled" style="background: white; padding: 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px; color: #1e293b;">
-            <i class="fas fa-users" style="color: #3b82f6; background: #eff6ff; padding: 8px; border-radius: 8px;"></i> 
+<div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: var(--card-shadow);">
+     <div class="card-header-styled" style="background: var(--surface-3); padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px; color: var(--text-color);">
+            <i class="fas fa-users" style="color: var(--primary-color); background: var(--surface-2); padding: 8px; border-radius: 8px; border: 1px solid var(--border);"></i> 
             Directorio de Clientes
         </h3>
-        <span id="result-count" style="font-size: 0.85rem; color: #64748b; background: #f8fafc; padding: 4px 10px; border-radius: 20px; border: 1px solid #e2e8f0;">
+        <span id="result-count" style="font-size: 0.85rem; color: var(--muted); background: var(--surface-2); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border);">
             Mostrando recientes
         </span>
     </div>
@@ -220,11 +220,11 @@ async function fetchClients(query = '') {
                         </div>
                     </td>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 8px; color: #475569;">
-                            <i class="far fa-envelope" style="color: #94a3b8;"></i> ${client.email}
+                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-color);">
+                            <i class="far fa-envelope" style="color: var(--muted);"></i> ${client.email}
                         </div>
                     </td>
-                    <td style="color: #64748b;">${client.formatted_date}</td>
+                    <td style="color: var(--muted);">${client.formatted_date}</td>
                     <td>${statusBadge}</td>
                     <td style="text-align: center;">
                         <div class="action-buttons">
@@ -271,22 +271,22 @@ document.addEventListener('DOMContentLoaded', () => fetchClients());
 <style>
     /* New Premium Styles */
     .btn-new-client {
-        background: #1e293b; 
+        background: var(--primary-color); 
         color: white;
-        border: none;
+        border: 1px solid var(--border);
         padding: 12px 25px;
         border-radius: 10px;
         cursor: pointer;
         font-weight: 600;
         font-size: 0.95rem;
-        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         transition: all 0.2s;
         display: flex; align-items: center; gap: 10px;
     }
     .btn-new-client:hover { 
-        background: #334155; 
+        background: var(--surface-3); 
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.3);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
     }
 
     #clientSearch:focus { 
@@ -297,21 +297,22 @@ document.addEventListener('DOMContentLoaded', () => fetchClients());
     /* Table Styles Override */
     #clientsTable { border-collapse: separate; border-spacing: 0; }
     #clientsTable th { 
-        border-bottom: 1px solid #e2e8f0; 
+        border-bottom: 1px solid var(--border); 
         text-transform: uppercase; 
         font-size: 0.75rem; 
         letter-spacing: 0.05em;
-        color: #64748b;
-        background: #f8fafc;
+        color: var(--muted);
+        background: var(--surface-3);
         padding: 15px 10px;
     }
     #clientsTable td {
         padding: 15px 10px;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border);
         vertical-align: middle;
+        color: var(--text-color);
     }
     .client-row-anim { animation: fadeIn 0.3s ease-out; }
-    .client-row-anim:hover { background: #f8fafc; }
+    .client-row-anim:hover { background: var(--surface-3); }
     
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -326,12 +327,12 @@ document.addEventListener('DOMContentLoaded', () => fetchClients());
         box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
     }
     
-    .client-name-text { font-weight: 600; color: #1e293b; font-size: 0.95rem; }
-    .client-id-text { font-size: 0.75rem; color: #94a3b8; }
+    .client-name-text { font-weight: 600; color: var(--text-color); font-size: 0.95rem; }
+    .client-id-text { font-size: 0.75rem; color: var(--muted); }
 
     .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
-    .badge-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-    .badge-red { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-green { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+    .badge-red { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
 
     .btn-icon { 
         width: 32px; height: 32px; 
@@ -354,9 +355,9 @@ document.addEventListener('DOMContentLoaded', () => fetchClients());
     .client-form-container.open { max-height: 1000px; opacity: 1; margin-bottom: 30px; }
     
     .client-form-card {
-        background: white; border-radius: 12px;
-        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-        padding: 30px; border: 1px solid #e2e8f0;
+        background: var(--surface-2); border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        padding: 30px; border: 1px solid var(--border);
         position: relative; overflow: hidden;
     }
     .client-form-card::before {
@@ -364,11 +365,11 @@ document.addEventListener('DOMContentLoaded', () => fetchClients());
         background: linear-gradient(90deg, #3b82f6, #6366f1);
     }
     
-    .form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; }
-    .form-header h3 { margin: 0; color: #0f172a; font-size: 1.2rem; }
+    .form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+    .form-header h3 { margin: 0; color: var(--text-color); font-size: 1.2rem; }
     
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; font-size: 0.9rem; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--muted); font-size: 0.9rem; }
     
     .input-icon { position: relative; }
     .input-icon i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
@@ -376,10 +377,10 @@ document.addEventListener('DOMContentLoaded', () => fetchClients());
     .input-icon input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
     
     .form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
-    .btn-submit { background: #0f172a; color: white; padding: 12px 25px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    .btn-submit:hover { background: #1e293b; transform: translateY(-1px); }
-    .btn-cancel { background: white; border: 1px solid #cbd5e1; color: #64748b; padding: 12px 20px; border-radius: 8px; cursor: pointer; }
-    .btn-cancel:hover { background: #f8fafc; color: #475569; }
+    .btn-submit { background: var(--primary-color); color: white; padding: 12px 25px; border-radius: 8px; border: 1px solid var(--border); font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-submit:hover { background: var(--surface-3); transform: translateY(-1px); }
+    .btn-cancel { background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); padding: 12px 20px; border-radius: 8px; cursor: pointer; }
+    .btn-cancel:hover { background: var(--surface-3); color: var(--text-color); }
 
     /* ---- Mobile Responsive ---- */
     @media (max-width: 768px) {

@@ -8,17 +8,17 @@
 <style>
     /* Support Layout */
     .support-wrapper {
-        display: flex; height: calc(100vh - 140px); background: white; 
-        border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        border: 1px solid #e2e8f0;
+        display: flex; height: calc(100vh - 140px); background: var(--surface-2); 
+        border-radius: 12px; overflow: hidden; box-shadow: var(--card-shadow);
+        border: 1px solid var(--border);
     }
     
     /* LEFT SIDEBAR (Client List) */
     .support-sidebar {
-        width: 320px; background: white; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column;
+        width: 320px; background: var(--surface-2); border-right: 1px solid var(--border); display: flex; flex-direction: column;
     }
     .sidebar-header {
-        padding: 20px; border-bottom: 1px solid #f1f5f9; background: #f8fafc;
+        padding: 20px; border-bottom: 1px solid var(--border); background: var(--surface-3);
     }
     .search-box {
         position: relative;
@@ -27,8 +27,9 @@
         position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;
     }
     .search-box input {
-        width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #cbd5e1;
-        border-radius: 8px; outline: none; transition: 0.2s; background: white;
+        width: 100%; padding: 10px 10px 10px 35px; border: 1px solid var(--border);
+        border-radius: 8px; outline: none; transition: 0.2s; background: var(--surface-1);
+        color: var(--text-color);
     }
     .search-box input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
     
@@ -37,22 +38,22 @@
     }
     .client-item {
         display: flex; align-items: center; gap: 12px; padding: 15px 20px;
-        border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s;
+        border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s;
         text-decoration: none; color: inherit;
     }
-    .client-item:hover { background: #f1f5f9; }
-    .client-item.active { background: #eff6ff; border-left: 4px solid #3b82f6; }
+    .client-item:hover { background: var(--surface-3); }
+    .client-item.active { background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; }
     
     .client-avatar {
-        width: 45px; height: 45px; border-radius: 50%; background: #e2e8f0;
+        width: 45px; height: 45px; border-radius: 50%; background: var(--surface-3);
         display: flex; align-items: center; justify-content: center;
-        font-weight: 700; color: #64748b; font-size: 1.1rem; flex-shrink: 0;
+        font-weight: 700; color: var(--text-muted); font-size: 1.1rem; flex-shrink: 0;
     }
     .client-item.active .client-avatar { background: #3b82f6; color: white; }
     
     .client-info { flex: 1; min-width: 0; }
-    .client-name { font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .client-meta { font-size: 0.8rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .client-name { font-weight: 600; color: var(--text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .client-meta { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
     .unread-badge {
         background: #ef4444; color: white; font-size: 0.75rem; font-weight: bold;
@@ -61,20 +62,20 @@
 
     /* RIGHT AREA (Chat) */
     .chat-area {
-        flex: 1; display: flex; flex-direction: column; background: #fff;
+        flex: 1; display: flex; flex-direction: column; background: var(--surface-1);
     }
     .chat-header-bar {
-        padding: 15px 25px; border-bottom: 1px solid #e2e8f0; background: white;
+        padding: 15px 25px; border-bottom: 1px solid var(--border); background: var(--surface-2);
         display: flex; justify-content: space-between; align-items: center; z-index: 10;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .chat-user-profile { display: flex; align-items: center; gap: 12px; }
-    .chat-user-name { font-weight: 700; color: #0f172a; font-size: 1.1rem; }
+    .chat-user-name { font-weight: 700; color: var(--text-color); font-size: 1.1rem; }
     .chat-status { font-size: 0.8rem; color: #10b981; display: flex; align-items: center; gap: 5px; }
     .chat-status::before { content: ''; width: 8px; height: 8px; background: #10b981; border-radius: 50%; }
 
     .messages-container {
-        flex: 1; padding: 25px; overflow-y: auto; background: #f8fafc;
+        flex: 1; padding: 25px; overflow-y: auto; background: var(--surface-1);
         display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth;
     }
     /* Custom Scrollbar for messages */
@@ -90,22 +91,23 @@
         border-bottom-right-radius: 4px;
     }
     .msg-received {
-        align-self: flex-start; background: white; color: #334155;
-        border-bottom-left-radius: 4px; border: 1px solid #e2e8f0;
+        align-self: flex-start; background: var(--surface-3); color: var(--text-color);
+        border-bottom-left-radius: 4px; border: 1px solid var(--border);
     }
     .msg-time {
         font-size: 0.7rem; margin-top: 4px; opacity: 0.8; text-align: right;
     }
 
     .input-area {
-        padding: 20px; background: white; border-top: 1px solid #e2e8f0;
+        padding: 20px; background: var(--surface-2); border-top: 1px solid var(--border);
         display: flex; gap: 15px; align-items: center;
     }
     .chat-input {
-        flex: 1; padding: 14px 20px; border: 2px solid #e2e8f0; border-radius: 25px;
-        outline: none; font-size: 0.95rem; transition: 0.2s; background: #f8fafc;
+        flex: 1; padding: 14px 20px; border: 2px solid var(--border); border-radius: 25px;
+        outline: none; font-size: 0.95rem; transition: 0.2s; background: var(--surface-3);
+        color: var(--text-color);
     }
-    .chat-input:focus { border-color: #3b82f6; background: white; }
+    .chat-input:focus { border-color: #3b82f6; background: var(--surface-1); }
     
     .btn-send {
         width: 50px; height: 50px; border-radius: 50%; background: #3b82f6;
@@ -118,7 +120,7 @@
 
     .empty-state {
         flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: #94a3b8; background: #f8fafc;
+        color: var(--text-muted); background: var(--surface-1);
     }
     .empty-state i { font-size: 4rem; opacity: 0.2; margin-bottom: 20px; }
     
@@ -142,7 +144,7 @@
     <!-- SIDEBAR -->
     <div class="support-sidebar">
         <div class="sidebar-header">
-            <h3 style="margin: 0 0 15px 0; color: #1e293b;">Mensajes</h3>
+            <h3 style="margin: 0 0 15px 0; color: var(--text-color);">Mensajes</h3>
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" id="clientSearch" placeholder="Buscar cliente..." onkeyup="filterClients()">
