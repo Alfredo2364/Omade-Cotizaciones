@@ -117,6 +117,7 @@ function convertThreeDigits($n) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket #<?= $id ?></title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         body { margin: 0; padding: 20px 0; background: #e0e0e0; font-family: 'Arial', sans-serif; display: flex; justify-content: center; }
         .receipt { background: white; width: 70mm; padding: 5mm 2mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); font-size: 11px; color: #000; line-height: 1.3; }
@@ -214,9 +215,98 @@ function convertThreeDigits($n) {
     </div>
 </div>
 
-<div class="no-print" style="position: fixed; bottom: 20px; right: 20px;">
-    <button onclick="window.print()" style="background: #000; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">🖨️ Imprimir</button>
+<?php
+// Build WhatsApp message from order data
+$waItems = '';
+foreach($items as $it) {
+    $waItems .= "\n  • " . strtoupper($it['name']) . " x" . $it['quantity'] . " — $" . number_format($it['price'] * $it['quantity'], 2);
+}
+$waMsg = "🧾 *NOTA DE VENTA — OMADE*\n"
+       . "Folio: OMD-" . str_pad($id, 6, '0', STR_PAD_LEFT) . "\n"
+       . "Fecha: $date $time\n"
+       . "Cliente: " . strtoupper($clientName) . "\n"
+       . "Atendió: " . strtoupper($sellerName) . "\n"
+       . "----------------------------"
+       . $waItems . "\n"
+       . "----------------------------\n"
+       . "*TOTAL: $" . number_format($total, 2) . "*\n"
+       . "¡Gracias por su compra! 🙏";
+$waEncoded = rawurlencode($waMsg);
+?>
+
+<div class="no-print" style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+    <button onclick="window.print()" style="background: #1e293b; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">🖨️ Imprimir</button>
+    <button id="btn-wa" onclick="compartirWA()" style="background: #25d366; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 6px;"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+        WhatsApp
+    </button>
 </div>
+
+<script>
+// Show WhatsApp button only on mobile/tablet
+(function() {
+    const isMobile = /Android|iPhone|iPad|iPod|HarmonyOS/i.test(navigator.userAgent)
+                  || (navigator.maxTouchPoints > 1);
+    if (isMobile) document.getElementById('btn-wa').style.display = 'block';
+})();
+
+async function compartirWA() {
+    const btn = document.getElementById('btn-wa');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '⏳ Capturando...';
+    btn.disabled = true;
+
+    try {
+        // Capture the receipt div as image
+        const canvas = await html2canvas(document.querySelector('.receipt'), {
+            scale: 3,           // High resolution
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        canvas.toBlob(async function(blob) {
+            if (!blob) {
+                // Some browsers return null — fallback to text
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                window.open('https://wa.me/?text=<?= $waEncoded ?>', '_blank');
+                return;
+            }
+            const fileName = 'Ticket-OMD-<?= str_pad($id, 6, '0', STR_PAD_LEFT) ?>.png';
+            const file = new File([blob], fileName, { type: 'image/png' });
+
+            // Try Web Share API with file (Android/iOS opens native share sheet → WhatsApp as image)
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Ticket OMADE',
+                        text: 'Ticket de venta - Distribuciones Omade'
+                    });
+                } catch(e) { /* cancelled */ }
+            } else if (navigator.share) {
+                // Share URL fallback if files not supported
+                await navigator.share({
+                    title: 'Ticket OMADE',
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                // Last fallback: wa.me with text
+                window.open('https://wa.me/?text=<?= $waEncoded ?>', '_blank');
+            }
+
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }, 'image/png');
+
+    } catch(err) {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        // Fallback to text on error
+        window.open('https://wa.me/?text=<?= $waEncoded ?>', '_blank');
+    }
+}
+</script>
 
 <script>
     function generateBarcode() {

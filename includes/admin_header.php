@@ -7,6 +7,11 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'supe
 require_once '../includes/db.php';
 require_once '../admin/includes/pagination.php';
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// Generate CSRF token for secure forms if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">

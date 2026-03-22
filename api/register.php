@@ -9,11 +9,25 @@ if (!$data) {
     exit;
 }
 
-$name = trim($data['name']);
-$paternal = trim($data['paternal_surname']);
-$maternal = trim($data['maternal_surname']);
-$email = trim($data['email']);
-$password = $data['password'];
+$name     = trim($data['name']              ?? '');
+$paternal = trim($data['paternal_surname']  ?? '');
+$maternal = trim($data['maternal_surname']  ?? '');
+$email    = trim($data['email']             ?? '');
+$password = $data['password']               ?? '';
+
+// Validate required fields
+if (!$name || !$paternal || !$email || !$password) {
+    echo json_encode(['success' => false, 'message' => 'Todos los campos son obligatorios.']);
+    exit;
+}
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => 'El correo no es válido.']);
+    exit;
+}
+if (strlen($password) < 6) {
+    echo json_encode(['success' => false, 'message' => 'La contraseña debe tener al menos 6 caracteres.']);
+    exit;
+}
 
 // Check if user exists
 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");

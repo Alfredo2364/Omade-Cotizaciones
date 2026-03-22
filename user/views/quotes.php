@@ -189,7 +189,10 @@
                          // Mock fetch to demonstrate flow if file isn't fully replaced with logic
                         const res = await fetch('../api/submit_quote.php', {
                             method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
                             body: JSON.stringify(data)
                         });
                         const result = await res.json();

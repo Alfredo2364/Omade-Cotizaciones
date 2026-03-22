@@ -19,7 +19,9 @@
                 <?php
                 // Fetch Favorites
                 try {
-                    $favs = $pdo->query("SELECT * FROM products WHERE pos_favorite = 1 LIMIT 20")->fetchAll();
+                    $favs = $pdo->query(
+                        "SELECT id, name, price, image, stock FROM products WHERE pos_favorite = 1 AND stock > 0 LIMIT 20"
+                    )->fetchAll();
                 } catch (Exception $e) {
                     $favs = [];
                 }
@@ -42,7 +44,6 @@
                     <div class='product-card' onclick=\"addToCart({$id}, '{$cleanName}', {$price})\">
                         <div class='product-img'>
                             <img src='{$img}' loading='lazy' decoding='async' onerror=\"this.src='https://via.placeholder.com/100?text=Sin+Img'\">
-                        </div>
                         </div>
                         <div class='product-info'>
                             <div class='product-name'>" . $displayName . "</div>

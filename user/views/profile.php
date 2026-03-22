@@ -111,7 +111,10 @@
                     try {
                         const res = await fetch('../api/update_profile.php', {
                             method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
                             body: JSON.stringify(data)
                         });
                         const result = await res.json();

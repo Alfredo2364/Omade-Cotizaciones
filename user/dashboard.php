@@ -6,6 +6,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
 }
 require_once '../includes/db.php';
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Mock active tab logic (simple one-page dashboard for now, or links to sections)
 $active_tab = $_GET['tab'] ?? 'home';
 
@@ -63,6 +67,11 @@ $msgs_count = $my_msgs->fetchColumn();
     <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="stylesheet" href="../assets/css/style.css">
+    
+    <script>
+        // Global CSRF Token for fetch requests
+        const csrfToken = "<?= $_SESSION['csrf_token'] ?>";
+    </script>
     
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_io/apple-touch-icon.png">

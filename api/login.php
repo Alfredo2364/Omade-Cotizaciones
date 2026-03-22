@@ -1,7 +1,7 @@
 <?php
-header('Content-Type: application/json');
+session_start();                         // Must be before ANY output and before db.php
+header('Content-Type: application/json; charset=utf-8');
 require_once '../includes/db.php';
-session_start();
 
 $data = json_decode(file_get_contents('php://input'), true);
 

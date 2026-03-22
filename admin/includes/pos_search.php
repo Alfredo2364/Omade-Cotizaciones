@@ -229,7 +229,6 @@
             if (!res.ok) throw new Error('Network response was not ok');
             
             const products = await res.json();
-            console.log('Results:', products); // Debug log
             
             resultsBox.innerHTML = ''; // Clear loading
             

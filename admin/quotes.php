@@ -12,6 +12,9 @@
 <?php
 // Handle Create Quote Logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quote'])) {
+    if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['csrf_token'] ?? '')) {
+        die("Error de validación CSRF");
+    }
     $client_name = $_POST['client_name'];
     $client_email = $_POST['client_email'] ?? '';
     $client_phone = $_POST['client_phone'] ?? '';
@@ -46,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_quote'])) {
         </div>
         
         <form method="POST">
+            <input type="hidden" name="_csrf" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <div class="form-body">
                 <!-- Client Info Section -->
                 <div class="section-title">Información del Cliente</div>
@@ -340,6 +344,9 @@ if (isset($_GET['view'])) {
 
 // Handle Status Updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
+    if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['csrf_token'] ?? '')) {
+        die("Error de validación CSRF");
+    }
     $new_status = $_POST['status']; // 'approved' or 'rejected'
     $qid = $_POST['quote_id'];
     
@@ -404,6 +411,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 
 // Handle Save Quote Details (without status change)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_quote_details'])) {
+    if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['csrf_token'] ?? '')) {
+        die("Error de validación CSRF");
+    }
     $qid = $_POST['quote_id'];
     $discount = $_POST['quote_discount'] ?? 0;
     $total = $_POST['quote_price'] ?? 0;
@@ -440,6 +450,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_quote_details'])
     </div>
     
     <form method="POST">
+        <input type="hidden" name="_csrf" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
         <input type="hidden" name="quote_id" value="<?= $selected_quote['id'] ?>">
         
         <div style="margin-top: 25px;">

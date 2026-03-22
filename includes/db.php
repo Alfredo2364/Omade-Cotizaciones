@@ -1,4 +1,7 @@
 <?php
+// Cargar capa de seguridad WAF antes de todo
+require_once __DIR__ . '/firewall.php';
+
 // ==========================================
 // CONFIGURACIÓN DE BASE DE DATOS
 // ==========================================

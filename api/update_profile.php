@@ -8,6 +8,14 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$headers = getallheaders();
+$csrf_header = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? '';
+
+if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_header)) {
+    echo json_encode(['success' => false, 'message' => 'Error de validación CSRF']);
+    exit;
+}
+
 $user_id = $_SESSION['user_id'];
 $data = json_decode(file_get_contents('php://input'), true);
 

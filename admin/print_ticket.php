@@ -634,6 +634,31 @@ function convertThreeDigits($n) {
 
     </div>
 
+<?php
+// Build WhatsApp message — adapts for order vs quote
+$folio = ($type == 'quote' ? 'COT-' : 'OMD-') . str_pad($id, 6, '0', STR_PAD_LEFT);
+$waItems2 = '';
+if (!empty($items)) {
+    foreach($items as $it) {
+        $waItems2 .= "\n  • " . strtoupper($it['name']) . " x" . $it['quantity'] . " — $" . number_format($it['price'] * $it['quantity'], 2);
+    }
+} elseif ($type == 'quote') {
+    $waItems2 = "\n  • " . strtoupper($data['service_type'] ?? 'Servicio') . " — $" . number_format($finalTotal ?? 0, 2);
+}
+$waLabelTitle = $type == 'quote' ? '📋 *COTIZACIÓN — OMADE*' : '🧾 *NOTA DE VENTA — OMADE*';
+$waMsg2 = "$waLabelTitle\n"
+         . "Folio: $folio\n"
+         . "Fecha: $date\n"
+         . "Cliente: " . strtoupper($clientName) . "\n"
+         . "----------------------------"
+         . $waItems2 . "\n"
+         . "----------------------------\n"
+         . "*TOTAL: $" . number_format($finalTotal ?? $total, 2) . "*\n"
+         . ($type == 'quote' ? "Vigencia: 15 días desde la fecha de emisión.\n" : "")
+         . "Distribuciones Omade — Tel: 999 232 3981 🙏";
+$waEncoded2 = rawurlencode($waMsg2);
+?>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <!-- PDF Download Button (Visible on Mobile/Tablet primarily) -->
@@ -672,27 +697,50 @@ function convertThreeDigits($n) {
             }
         }
 
-        // ---- Web Share API (share via WhatsApp, Telegram, Email etc.) ----
-        async function shareDocument() {
-            if (!navigator.share) {
-                // Fallback: copy link to clipboard
-                navigator.clipboard.writeText(window.location.href).then(() => {
-                    alert('Enlace copiado al portapapeles');
-                });
-                return;
-            }
+        // ---- Web Share API — share as PDF file (appears in WhatsApp as document) ----
+        async function shareDocument(btnEl) {
+            const btn = btnEl || null;
+            const originalLabel = btn ? btn.innerHTML : '';
+            if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...'; btn.disabled = true; }
+
             try {
-                await navigator.share({
-                    title: '<?= $title ?> #<?= str_pad($id,6,'0',STR_PAD_LEFT) ?>',
-                    text: 'Documento de <?= htmlspecialchars($clientName) ?>',
-                    url: window.location.href
-                });
-            } catch(e) { /* user cancelled */ }
+                const element = document.querySelector('.document-container');
+                // Correct html2pdf chain for blob output
+                const pdfBlob = await html2pdf().set({
+                    margin:      [8, 8, 8, 8],
+                    filename:    '<?= $folio ?>.pdf',
+                    image:       { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF:       { unit: 'mm', format: 'letter', orientation: 'landscape' }
+                }).from(element).toPdf().output('blob');
+
+                const pdfFile = new File([pdfBlob], '<?= $folio ?>.pdf', { type: 'application/pdf' });
+
+                if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                    await navigator.share({
+                        files: [pdfFile],
+                        title: '<?= $title ?> <?= $folio ?>',
+                        text:  'Documento de <?= htmlspecialchars($clientName) ?> — Distribuciones Omade'
+                    }).catch(() => {});
+                } else if (navigator.share) {
+                    await navigator.share({
+                        title: '<?= $title ?> <?= $folio ?>',
+                        url: window.location.href
+                    }).catch(() => {});
+                } else {
+                    window.open('https://wa.me/?text=<?= $waEncoded2 ?>', '_blank');
+                }
+            } catch(err) {
+                window.open('https://wa.me/?text=<?= $waEncoded2 ?>', '_blank');
+            } finally {
+                if (btn) { btn.innerHTML = originalLabel; btn.disabled = false; }
+            }
         }
 
-        // Show tablet banner
-        if (window.innerWidth <= 1024) {
-            document.getElementById('tablet-banner').style.display = 'block';
+        // Show tablet banner if it exists
+        const tabletBanner = document.getElementById('tablet-banner');
+        if (tabletBanner && window.innerWidth <= 1024) {
+            tabletBanner.style.display = 'block';
         }
 
         // Device Detection — covers Android, iOS, HarmonyOS (Huawei MatePad, etc.)
@@ -747,8 +795,8 @@ function convertThreeDigits($n) {
                     <i class="fas fa-file-pdf"></i> Descargar PDF
                 </button>
                 ${ hasShare ? `
-                <button class="mob-btn" onclick="shareDocument()" style="background:#2563eb;color:white;">
-                    <i class="fas fa-share-alt"></i> Compartir (WhatsApp, Email...)
+                <button class="mob-btn" onclick="shareDocument(this)" style="background:#25d366;color:white;">
+                    <i class="fas fa-share-alt"></i> Compartir por WhatsApp
                 </button>` : `` }
                 <button class="mob-btn" onclick="history.back()" style="background:#f1f5f9;color:#64748b;font-weight:500;">
                     <i class="fas fa-arrow-left"></i> Volver

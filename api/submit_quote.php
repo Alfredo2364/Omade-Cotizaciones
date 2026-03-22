@@ -1,6 +1,20 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 require_once '../includes/db.php';
+
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['success' => false, 'message' => 'No autorizado']);
+    exit;
+}
+
+$headers = getallheaders();
+$csrf_header = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? '';
+
+if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_header)) {
+    echo json_encode(['success' => false, 'message' => 'Error de validación CSRF']);
+    exit;
+}
 
 $data = json_decode(file_get_contents('php://input'), true);
 

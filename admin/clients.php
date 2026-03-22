@@ -2,11 +2,14 @@
 <?php if (!hasPermission($pdo, $_SESSION['user_id'], 'clients')) die("Acceso Denegado"); ?>
 
 <?php
-// Handle Ban/Unban
-if (isset($_GET['ban']) && isset($_GET['id'])) {
-    $ban_status = $_GET['ban'];
+// Handle Ban/Unban via POST protected by CSRF
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ban_status']) && isset($_POST['client_id'])) {
+    if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['csrf_token'] ?? '')) {
+        die("Error de validación CSRF");
+    }
+    $ban_status = (int)$_POST['ban_status'];
     $stmt = $pdo->prepare("UPDATE users SET is_banned = ? WHERE id = ?");
-    $stmt->execute([$ban_status, $_GET['id']]);
+    $stmt->execute([$ban_status, $_POST['client_id']]);
     
     $msg = $ban_status ? 'Cliente bloqueado correctamente' : 'Cliente desbloqueado correctamente';
     $_SESSION['flash'] = ['message' => $msg, 'type' => 'success'];
@@ -16,6 +19,9 @@ if (isset($_GET['ban']) && isset($_GET['id'])) {
 
 // Handle Create Client
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_client'])) {
+    if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['csrf_token'] ?? '')) {
+        die("Error de validación CSRF");
+    }
     $name = trim($_POST['name']);
     $paternal = trim($_POST['paternal']);
     $maternal = trim($_POST['maternal']);
@@ -72,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_client'])) {
         </div>
         
         <form method="POST">
+            <input type="hidden" name="_csrf" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <div class="form-grid">
                 <div class="form-group">
                     <label>Nombre(s)</label>
@@ -195,9 +202,10 @@ async function fetchClients(query = '') {
                     ? '<span class="badge badge-red"><i class="fas fa-ban"></i> Bloqueado</span>'
                     : '<span class="badge badge-green"><i class="fas fa-check"></i> Activo</span>';
                 
+                const csrfToken = "<?= $_SESSION['csrf_token'] ?? '' ?>";
                 const actionBtn = client.is_banned == 1
-                    ? `<a href="?ban=0&id=${client.id}" class="btn-icon btn-unlock" title="Desbloquear acceso"><i class="fas fa-unlock"></i></a>`
-                    : `<a href="?ban=1&id=${client.id}" class="btn-icon btn-lock" title="Bloquear acceso"><i class="fas fa-lock"></i></a>`;
+                    ? `<form method="POST" style="display:inline;margin:0;"><input type="hidden" name="_csrf" value="${csrfToken}"><input type="hidden" name="ban_status" value="0"><input type="hidden" name="client_id" value="${client.id}"><button type="submit" class="btn-icon btn-unlock" title="Desbloquear acceso" style="border:none;cursor:pointer;"><i class="fas fa-unlock"></i></button></form>`
+                    : `<form method="POST" style="display:inline;margin:0;"><input type="hidden" name="_csrf" value="${csrfToken}"><input type="hidden" name="ban_status" value="1"><input type="hidden" name="client_id" value="${client.id}"><button type="submit" class="btn-icon btn-lock" title="Bloquear acceso" style="border:none;cursor:pointer;"><i class="fas fa-lock"></i></button></form>`;
 
                 tr.innerHTML = `
                     <td style="padding-left: 25px;">

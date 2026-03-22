@@ -19,18 +19,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $in_carousel = isset($_POST['in_carousel']) ? 1 : 0;
         $pos_favorite = isset($_POST['pos_favorite']) ? 1 : 0;
 
-        // Image Handling
+        // Image Handling — with file type validation
         $imagePath = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../uploads/products/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-            
-            $fileExt = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-            $fileName = uniqid() . '.' . $fileExt;
-            $targetFile = $uploadDir . $fileName;
-            
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-                $imagePath = 'uploads/products/' . $fileName;
+            $allowed_ext  = ['jpg','jpeg','png','gif','webp'];
+            $allowed_mime = ['image/jpeg','image/png','image/gif','image/webp'];
+            $fileExt  = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            $fileMime = mime_content_type($_FILES['image']['tmp_name']);
+
+            if (!in_array($fileExt, $allowed_ext) || !in_array($fileMime, $allowed_mime)) {
+                $_SESSION['flash'] = ['message' => 'Tipo de archivo no permitido. Solo imágenes (jpg, png, gif, webp).', 'type' => 'error'];
+            } else {
+                $uploadDir = '../uploads/products/';
+                if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                $fileName   = uniqid('img_') . '.' . $fileExt;
+                $targetFile = $uploadDir . $fileName;
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+                    $imagePath = 'uploads/products/' . $fileName;
+                }
             }
         }
 
@@ -91,13 +97,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Delete logic
-if (isset($_GET['delete'])) {
+// Delete logic — requires POST with CSRF token to prevent CSRF via img/link attacks
+if (isset($_GET['delete']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_csrf']) && $_POST['_csrf'] === ($_SESSION['csrf_token'] ?? '')) {
+    $delId = (int)$_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->execute([$_GET['delete']]);
-    logActivity($pdo, $_SESSION['user_id'], 'DELETE_PRODUCT', "Eliminó producto ID: " . $_GET['delete']);
+    $stmt->execute([$delId]);
+    logActivity($pdo, $_SESSION['user_id'], 'DELETE_PRODUCT', "Eliminó producto ID: $delId");
     $_SESSION['flash'] = ['message' => 'Producto eliminado correctamente', 'type' => 'success'];
-    echo "<script>window.location.href='products.php';</script>";
+    header('Location: products.php');
     exit;
 }
 
@@ -341,9 +348,14 @@ if (isset($_GET['edit'])) {
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        <div class="action-buttons" style="justify-content: center;">
+                        <div class="action-buttons" style="justify-content: center; display: flex; gap: 5px;">
                             <a href="?edit=<?= $p['id'] ?>" class="btn-icon btn-edit" title="Editar"><i class="fas fa-pencil-alt"></i></a>
-                            <a href="?delete=<?= $p['id'] ?>" class="btn-icon btn-delete" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar este producto?');"><i class="fas fa-trash-alt"></i></a>
+                            <form method="POST" action="?delete=<?= $p['id'] ?>" style="display: inline; margin: 0;">
+                                <input type="hidden" name="_csrf" value="<?= $_SESSION['csrf_token'] ?>">
+                                <button type="submit" class="btn-icon btn-delete" title="Eliminar" style="border:none; cursor:pointer;" onclick="return confirm('¿Seguro que deseas eliminar este producto?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>

@@ -9,11 +9,11 @@
     <form method="GET" class="report-filter-form">
         <div class="filter-group">
             <label>Desde:</label>
-            <input type="date" name="from" value="<?= $_GET['from'] ?? date('Y-m-01') ?>" onclick="this.showPicker()" style="cursor: pointer;">
+            <input type="date" name="from" value="<?= htmlspecialchars($_GET['from'] ?? date('Y-m-01')) ?>" onclick="this.showPicker()" style="cursor: pointer;">
         </div>
         <div class="filter-group">
             <label>Hasta:</label>
-            <input type="date" name="to" value="<?= $_GET['to'] ?? date('Y-m-d') ?>" onclick="this.showPicker()" style="cursor: pointer;">
+            <input type="date" name="to" value="<?= htmlspecialchars($_GET['to'] ?? date('Y-m-d')) ?>" onclick="this.showPicker()" style="cursor: pointer;">
         </div>
         <div class="filter-btn-container">
             <button type="submit" class="btn-action btn-generate"><i class="fas fa-calendar-alt"></i> Generar Reporte</button>

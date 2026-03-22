@@ -14,10 +14,11 @@ try {
         exit;
     }
 
-    $action = $_GET['action'] ?? '';
+    $action      = $_GET['action'] ?? '';
     $currentUser = $_SESSION['user_id'];
-    
-    // IMPORTANT: Close session writing to prevent locking
+    $role        = $_SESSION['role'] ?? 'client'; // Capture before session_write_close()
+
+    // Release session write lock — prevents blocking concurrent requests
     session_write_close();
 
     // ==========================================

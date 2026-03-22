@@ -17,6 +17,11 @@ if (!$input || empty($input['cart'])) {
     exit;
 }
 
+if (!is_array($input['cart']) || count($input['cart']) > 200) {
+    echo json_encode(['success' => false, 'message' => 'Límite de productos por ticket excedido (Max 200).']);
+    exit;
+}
+
 try {
     $pdo->beginTransaction();
 
@@ -31,20 +36,46 @@ try {
     $stmt->execute([$_SESSION['user_id'], $clientName, $total]);
     $order_id = $pdo->lastInsertId();
 
-    // Process Items
-    $stmtItem = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
-    $updateStock = $pdo->prepare("UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?");
+    // Process Items — price fetched from DB (never trust client-sent price)
+    $getProduct = $pdo->prepare(
+        "SELECT id, price, stock FROM products WHERE id = ? LIMIT 1"
+    );
+    $stmtItem   = $pdo->prepare(
+        "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)"
+    );
+    $updateStock = $pdo->prepare(
+        "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?"
+    );
+
+    $total = 0; // Recalculate total from real DB prices
 
     foreach ($input['cart'] as $item) {
-        // Check/Deduct Stock
-        $updateStock->execute([$item['qty'], $item['id'], $item['qty']]);
-        if ($updateStock->rowCount() == 0) {
-            throw new Exception("Stock insuficiente para: " . $item['name']);
+        $itemId  = (int)($item['id']  ?? 0);
+        $itemQty = (int)($item['qty'] ?? 1);
+
+        if ($itemId <= 0 || $itemQty <= 0) continue;
+
+        // Fetch real price from DB — reject if product doesn't exist
+        $getProduct->execute([$itemId]);
+        $product = $getProduct->fetch();
+        if (!$product) {
+            throw new Exception("Producto no encontrado: ID $itemId");
         }
 
-        // Insert Item
-        $stmtItem->execute([$order_id, $item['id'], $item['qty'], $item['price']]);
+        $realPrice = (float)$product['price'];
+        $total    += $realPrice * $itemQty;
+
+        // Deduct stock atomically
+        $updateStock->execute([$itemQty, $itemId, $itemQty]);
+        if ($updateStock->rowCount() == 0) {
+            throw new Exception("Stock insuficiente para: " . ($item['name'] ?? "ID $itemId"));
+        }
+
+        $stmtItem->execute([$order_id, $itemId, $itemQty, $realPrice]);
     }
+
+    // Update order total with real DB-calculated amount
+    $pdo->prepare("UPDATE orders SET total = ? WHERE id = ?")->execute([$total, $order_id]);
 
     $pdo->commit();
     logActivity($pdo, $_SESSION['user_id'], 'POS_SALE', "Venta realizada ID: $order_id Total: $$total");
