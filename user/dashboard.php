@@ -409,6 +409,53 @@ $msgs_count = $my_msgs->fetchColumn();
         .bottom-nav a i { font-size: 1.2rem; }
         .bottom-nav a.active, .bottom-nav a:hover { color: var(--secondary); background: #eff6ff; }
         @media (max-width: 600px) { .bottom-nav { display: flex; } }
+        .tracker-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            z-index: 30000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .tracker-modal.open { opacity: 1; visibility: visible; }
+        .tracker-card {
+            background: white; width: 90%; max-width: 500px;
+            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden; padding: 30px;
+        }
+        .tracker-modal.open .tracker-card { transform: translateY(0); }
+        .tracker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .tracker-header h3 { margin: 0; color: var(--primary); font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        
+        .timeline { position: relative; margin: 20px 0; padding-left: 30px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 7px; top: 5px; height: calc(100% - 10px); width: 3px;
+            background: #e2e8f0; border-radius: 3px; z-index: 1;
+        }
+        
+        .timeline-step { position: relative; margin-bottom: 25px; }
+        .timeline-step:last-child { margin-bottom: 0; }
+        .timeline-step .dot {
+            position: absolute; left: -30px; top: 2px; width: 17px; height: 17px;
+            border-radius: 50%; background: #e2e8f0; z-index: 2; transition: all 0.3s;
+        }
+        .timeline-step .content h4 { margin: 0 0 5px; color: #64748b; font-size: 1.05rem; }
+        .timeline-step .content p { margin: 0; color: #94a3b8; font-size: 0.85rem; }
+
+        /* Status Modifiers */
+        .timeline-step.active .dot { background: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
+        .timeline-step.active .content h4 { color: #1e293b; font-weight: 700; }
+        
+        .timeline-step.completed .dot { background: #10b981; }
+        .timeline-step.completed .content h4 { color: #10b981; font-weight: 700; }
+
+        .timeline-step.error .dot { background: #ef4444; }
+        .timeline-step.error .content h4 { color: #ef4444; font-weight: 700; }
+        
+        /* dynamic line filler logic */
+        .timeline-progress {
+            position: absolute; left: 7px; top: 5px; width: 3px; background: #10b981;
+            z-index: 1; border-radius: 3px; transition: height 0.5s ease; width: 3px;
+        }
     </style>
 </head>
 <body>
@@ -613,6 +660,70 @@ $msgs_count = $my_msgs->fetchColumn();
                 box.classList.remove('active');
                 setTimeout(() => { overlay.style.display = 'none'; }, 300);
             }, duration);
+        }
+    </script>
+    <!-- Tracking Modal Overlay -->
+    <div id="trackerModal" class="tracker-modal">
+        <div class="tracker-card">
+            <div class="tracker-header">
+                <h3><i class="fas fa-route" style="color: #3b82f6;"></i> Estatus de Seguimiento</h3>
+                <button onclick="closeTrackerModal()" style="background: none; border: none; font-size: 1.5rem; color: #94a3b8; cursor: pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 25px; border: 1px dashed #cbd5e1;">
+                <span id="trackerRef" style="font-family: monospace; font-weight: 700; color: #475569;">#REF-000</span>
+            </div>
+
+            <div class="timeline" id="timelineContainer">
+                <div class="timeline-progress" id="timelineProgress"></div>
+                <!-- Steps injected via JS -->
+            </div>
+            
+            <button onclick="closeTrackerModal()" class="premium-btn" style="width: 100%; margin-top: 25px; justify-content: center; background: #64748b;">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Modal Logic
+        function openTrackerModal(id, status, type) {
+            document.getElementById('trackerRef').innerText = (type === 'quote' ? 'COT-' : 'PED-') + id.padStart(5, '0');
+            
+            const container = document.getElementById('timelineContainer');
+            // Reset
+            const stepsHTML = [];
+            let heightPercent = '0%';
+            
+            if (type === 'quote') {
+                if (status === 'rejected') {
+                    stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>Recibido</h4><p>Cotización recibida en sistema.</p></div></div>`);
+                    stepsHTML.push(`<div class="timeline-step error"><div class="dot"></div><div class="content"><h4>Rechazada / Cancelada</h4><p>El administrador declinó la solicitud.</p></div></div>`);
+                    heightPercent = '100%';
+                } else if (status === 'pending') {
+                    stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>Recibido</h4><p>Cotización recibida en sistema.</p></div></div>`);
+                    stepsHTML.push(`<div class="timeline-step active"><div class="dot"></div><div class="content"><h4>En Proceso</h4><p>Un agente está revisando los precios y disponibilidad.</p></div></div>`);
+                    stepsHTML.push(`<div class="timeline-step"><div class="dot"></div><div class="content"><h4>Aprobado / Enviado</h4><p>Esperando confirmación final.</p></div></div>`);
+                    heightPercent = '50%';
+                } else if (status === 'approved') {
+                    stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>Recibido</h4><p>Cotización recibida en sistema.</p></div></div>`);
+                    stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>En Proceso</h4><p>Cotización evaluada.</p></div></div>`);
+                    stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>Aprobado / Completado</h4><p>Tu orden de compra o cotización ha sido aprobada con éxito.</p></div></div>`);
+                    heightPercent = '100%';
+                }
+            } else if (type === 'order') {
+                // Orders imply completed workflows in POS/Billing usually
+                stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>Recibido</h4><p>Pedido registrado y validado.</p></div></div>`);
+                stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>En Proceso</h4><p>Logística y empaquetado.</p></div></div>`);
+                stepsHTML.push(`<div class="timeline-step completed"><div class="dot"></div><div class="content"><h4>Enviado / Entregado</h4><p>El pedido físico o nota fue surtido por completo.</p></div></div>`);
+                heightPercent = '100%';
+            }
+
+            container.innerHTML = `<div class="timeline-progress" style="height: ${heightPercent}"></div>` + stepsHTML.join('');
+            document.getElementById('trackerModal').classList.add('open');
+        }
+
+        function closeTrackerModal() {
+            document.getElementById('trackerModal').classList.remove('open');
         }
     </script>
 </body>

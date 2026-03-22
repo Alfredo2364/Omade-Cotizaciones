@@ -39,9 +39,11 @@
                                 <td style="font-weight: 700; color: var(--text-main);">$<?= number_format($o['total'], 2) ?></td>
                                 <td><span class="status-badge status-approved">Completado</span></td>
                                 <td>
-                                     <button class="btn-action-primary" onclick="alert('Funcionalidad de detalles detallados pendiente de implementación')" style="padding: 6px 12px; font-size: 0.85rem; border: none; cursor: pointer;">
-                                        <i class="fas fa-eye"></i> Ver
-                                     </button>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn-action-primary" onclick="openTrackerModal('<?= $o['id'] ?>', 'completed', 'order')" style="padding: 6px 12px; font-size: 0.85rem; border: none; cursor: pointer; background: #10b981;">
+                                            <i class="fas fa-map-marker-alt"></i> Rastreo
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

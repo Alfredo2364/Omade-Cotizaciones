@@ -5,6 +5,9 @@ try {
     // Add columns if they don't exist
     $pdo->exec("ALTER TABLE users ADD COLUMN is_verified TINYINT(1) DEFAULT 0");
     $pdo->exec("ALTER TABLE users ADD COLUMN verification_token VARCHAR(255) NULL");
+    $pdo->exec("ALTER TABLE users ADD COLUMN token_expires_at DATETIME NULL");
+    $pdo->exec("ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) NULL");
+    $pdo->exec("ALTER TABLE users ADD COLUMN reset_expires_at DATETIME NULL");
 
     // Existing users should be auto-verified so we don't lock out admins and past clients
     $pdo->exec("UPDATE users SET is_verified = 1");

@@ -91,6 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = e.target.querySelector('.btn-submit');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Verificando...';
+            
+            const resendBtn = document.getElementById('resendBtn');
+            if (resendBtn) resendBtn.style.display = 'none';
+
             const formData = {
                 email: document.getElementById('email').value,
                 password: document.getElementById('password').value
@@ -107,11 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.success) {
                     window.location.href = result.redirect;
                 } else {
-                    showToast(result.message, 'error');
+                    showToast(result.message, 'error', 4000);
+                    if(result.message.includes('verificar tu correo') && resendBtn) {
+                        resendBtn.style.display = 'block';
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);
                 showToast('Error de conexión.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
             }
         });
     }
@@ -131,8 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: document.getElementById('name').value.trim(),
                 paternal_surname: document.getElementById('paternal_surname').value.trim(),
                 maternal_surname: document.getElementById('maternal_surname').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                password: document.getElementById('password').value
+                email: document.getElementById('reg_email').value.trim(),
+                password: document.getElementById('reg_password').value
             };
 
             try {
@@ -144,8 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (result.success) {
-                    showToast(result.message, 'success');
-                    setTimeout(() => window.location.href = 'login.php', 1500);
+                    showToast(result.message, 'success', 5000);
+                    registerForm.reset();
+                    if(typeof slideAuth === 'function') slideAuth('login');
                 } else {
                     showToast(result.message, 'error');
                 }

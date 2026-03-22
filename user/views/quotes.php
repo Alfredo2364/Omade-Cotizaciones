@@ -53,7 +53,14 @@
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="../admin/print_ticket.php?type=quote&id=<?= $q['id'] ?>" target="_blank" style="color: var(--secondary); font-size: 1.1rem; transition: 0.2s;" title="Ver PDF"><i class="fas fa-file-pdf"></i></a>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="../admin/print_ticket.php?type=quote&id=<?= $q['id'] ?>" target="_blank" class="btn-action-primary" style="padding: 6px 12px; font-size: 0.85rem; border: none; cursor: pointer; text-decoration: none;" title="Ver PDF">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </a>
+                                            <button type="button" class="btn-action-primary" onclick="openTrackerModal('<?= $q['id'] ?>', '<?= $q['status'] ?>', 'quote')" style="padding: 6px 12px; font-size: 0.85rem; border: none; cursor: pointer; background: #3b82f6;">
+                                                <i class="fas fa-truck-loading"></i> Rastreo
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
