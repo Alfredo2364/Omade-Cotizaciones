@@ -26,6 +26,12 @@ if ($user) {
         exit;
     }
 
+    // Check email verification
+    if (isset($user['is_verified']) && $user['is_verified'] == 0) {
+        echo json_encode(['success' => false, 'message' => 'Debes verificar tu correo electrónico antes de iniciar sesión. Por favor, revisa tu bandeja de entrada o SPAM.']);
+        exit;
+    }
+
     if (password_verify($password, $user['password'])) {
         // Success
         $_SESSION['user_id'] = $user['id'];

@@ -4,16 +4,17 @@ header('Content-Type: application/json');
 require_once '../includes/db.php';
 
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'No autorizado']);
-    exit;
-}
+    // If not logged in, they can still submit a quote (public lead generation)
+    // But we skip CSRF if they don't have a session, relying on rate limiter instead.
+} else {
+    // Verified User CSRF Check
+    $headers = getallheaders();
+    $csrf_header = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? '';
 
-$headers = getallheaders();
-$csrf_header = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? '';
-
-if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_header)) {
-    echo json_encode(['success' => false, 'message' => 'Error de validación CSRF']);
-    exit;
+    if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_header)) {
+        echo json_encode(['success' => false, 'message' => 'Error de validación CSRF']);
+        exit;
+    }
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -23,12 +24,20 @@ if (!$data) {
     exit;
 }
 
-$name = $data['name'];
-$email = $data['email'];
-$phone = $data['phone'] ?? '';
-$address = $data['address'] ?? '';
-$service = $data['service'];
-$description = $data['description'];
+$name = trim($data['name']);
+$email = trim($data['email']);
+$phone = trim($data['phone'] ?? '');
+$address = trim($data['address'] ?? '');
+$service = trim($data['service']);
+$description = trim($data['description']);
+
+// Enforce email validation on public quotes to prevent spam/fake leads
+require_once '../includes/email_validator.php';
+$email_check = is_valid_email_strict($email);
+if (!$email_check['valid']) {
+    echo json_encode(['success' => false, 'message' => $email_check['message']]);
+    exit;
+}
 
 $sql = "INSERT INTO quotes (client_name, client_email, client_phone, client_address, service_type, description) VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $pdo->prepare($sql);

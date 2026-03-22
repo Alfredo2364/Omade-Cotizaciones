@@ -35,6 +35,13 @@ if (empty($name) || empty($email)) {
     exit;
 }
 
+require_once '../includes/email_validator.php';
+$email_check = is_valid_email_strict($email);
+if (!$email_check['valid']) {
+    echo json_encode(['success' => false, 'message' => $email_check['message']]);
+    exit;
+}
+
 // RESTRICTION: Employees (admins) cannot change email
 // Only 'client' can change their email. 
 // However, the current email is likely what's passed if the field is disabled, 
