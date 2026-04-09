@@ -116,8 +116,21 @@ function convertThreeDigits($n) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket #<?= $id ?></title>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="../assets/js/jsbarcode.min.js"></script>
+    <script src="../assets/js/html2canvas.min.js"></script>
+    <script src="../assets/js/jspdf.min.js"></script>
+    <style>
+        .action-panel { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; z-index: 9999; }
+        .btn-action-pill { display: flex; align-items: center; gap: 8px; border: none; padding: 11px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 14px rgba(0,0,0,0.25); transition: transform 0.15s, opacity 0.15s; }
+        .btn-action-pill:hover { transform: translateY(-2px); opacity: 0.92; }
+        .btn-action-pill:active { transform: scale(0.97); }
+        .btn-print   { background: #1e293b; color: white; }
+        .btn-pdf     { background: #dc2626; color: white; } /* Desktop-only: hidden on mobile via JS */
+        .btn-img-png { background: #7c3aed; color: white; }
+        .btn-img-jpg { background: #0ea5e9; color: white; }
+        .btn-wa      { background: #25d366; color: white; display:none; }
+        @media print { .action-panel { display: none !important; } }
+    </style>
     <style>
         body { margin: 0; padding: 20px 0; background: #e0e0e0; font-family: 'Arial', sans-serif; display: flex; justify-content: center; }
         .receipt { background: white; width: 70mm; padding: 5mm 2mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); font-size: 11px; color: #000; line-height: 1.3; }
@@ -234,21 +247,120 @@ $waMsg = "🧾 *NOTA DE VENTA — OMADE*\n"
 $waEncoded = rawurlencode($waMsg);
 ?>
 
-<div class="no-print" style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
-    <button onclick="window.print()" style="background: #1e293b; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">🖨️ Imprimir</button>
-    <button id="btn-wa" onclick="compartirWA()" style="background: #25d366; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 6px;"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+<div class="action-panel">
+    <button class="btn-action-pill btn-print" onclick="accionImprimir()">🖨️ Imprimir</button>
+    <button id="btn-pdf" class="btn-action-pill btn-pdf" onclick="descargarPDF()">📄 Guardar PDF</button>
+    <button class="btn-action-pill btn-img-png" onclick="descargarImagen('png')">📥 Guardar PNG</button>
+    <button class="btn-action-pill btn-img-jpg" onclick="descargarImagen('jpg')">🖼️ Guardar JPG</button>
+    <button id="btn-wa" class="btn-action-pill btn-wa" onclick="compartirWA()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
         WhatsApp
     </button>
 </div>
 
 <script>
-// Show WhatsApp button only on mobile/tablet
+// Show WhatsApp button only on mobile; hide PDF on mobile (use image/WA instead)
 (function() {
     const isMobile = /Android|iPhone|iPad|iPod|HarmonyOS/i.test(navigator.userAgent)
                   || (navigator.maxTouchPoints > 1);
-    if (isMobile) document.getElementById('btn-wa').style.display = 'block';
+    if (isMobile) {
+        document.getElementById('btn-wa').style.display  = 'flex';
+        document.getElementById('btn-pdf').style.display = 'none';
+    }
 })();
+
+// ---- Imprimir con cierre automático tras cerrar el diálogo ----
+function accionImprimir() {
+    window.onafterprint = function() { window.close(); };
+    window.print();
+}
+
+// ---- Download as PDF (desktop) ----
+async function descargarPDF() {
+    const { jsPDF } = window.jspdf;
+    const folio = 'OMD-<?= str_pad($id, 6, "0", STR_PAD_LEFT) ?>';
+    const btn   = document.getElementById('btn-pdf');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Generando PDF...';
+    btn.disabled  = true;
+
+    try {
+        const receiptEl = document.querySelector('.receipt');
+        const canvas = await html2canvas(receiptEl, {
+            scale: 3,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/png', 1.0);
+
+        // Dimensions: match the receipt width (70mm) with proportional height
+        const pxToMm  = 0.264583;                            // 1px = 0.2646mm at 96dpi
+        const widthMm = receiptEl.offsetWidth  * pxToMm;    // ~70mm
+        const heightMm= receiptEl.offsetHeight * pxToMm;
+
+        const pdf = new jsPDF({ unit: 'mm', format: [widthMm, heightMm], orientation: 'portrait' });
+        pdf.addImage(imgData, 'PNG', 0, 0, widthMm, heightMm, '', 'FAST');
+        pdf.save(`Ticket-${folio}.pdf`);
+
+        btn.innerHTML = '✅ PDF Guardado';
+        setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; window.close(); }, 1500);
+    } catch(err) {
+        console.error('Error al generar PDF:', err);
+        alert('Error al generar el PDF. Intenta de nuevo.');
+        btn.innerHTML = originalText;
+        btn.disabled  = false;
+    }
+}
+
+// ---- Download as image (PNG or JPG) ----
+async function descargarImagen(formato) {
+    const folio = 'OMD-<?= str_pad($id, 6, "0", STR_PAD_LEFT) ?>';
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Capturando...';
+    btn.disabled = true;
+
+    try {
+        const canvas = await html2canvas(document.querySelector('.receipt'), {
+            scale: 3,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false
+        });
+
+        const mimeType = formato === 'jpg' ? 'image/jpeg' : 'image/png';
+        const ext      = formato === 'jpg' ? 'jpg' : 'png';
+        const quality  = formato === 'jpg' ? 0.92 : 1.0;
+
+        canvas.toBlob(function(blob) {
+            if (!blob) { alert('No se pudo generar la imagen.'); btn.innerHTML = originalText; btn.disabled = false; return; }
+            const url  = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href     = url;
+            link.download = `Ticket-${folio}.${ext}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            btn.innerHTML = '✅ Guardado';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                window.close();
+            }, 1200);
+        }, mimeType, quality);
+
+    } catch(err) {
+        console.error('Error al capturar:', err);
+        alert('Error al capturar la imagen. Intenta de nuevo.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
 
 async function compartirWA() {
     const btn = document.getElementById('btn-wa');
@@ -318,34 +430,8 @@ async function compartirWA() {
         
         
         
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        window.onafterprint = function() {
-            if (isMobile) {
-                // Show "Sensor" Menu instead of closing, with delay
-                setTimeout(function(){
-                    let overlay = document.createElement('div');
-                    overlay.id = 'print-sensor';
-                    overlay.innerHTML = `
-                        <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; display:flex; align-items:center; justify-content:center;">
-                            <div style="background:white; padding:20px; border-radius:10px; text-align:center; max-width:80%;">
-                                <h3 style="margin-top:0;">¿Se imprimió correctamente?</h3>
-                                <button onclick="window.close()" style="background:#22c55e; color:white; padding:10px 20px; border:none; border-radius:5px; margin:5px; font-weight:bold; width:100%;">SI - CERRAR</button><br>
-                                <button onclick="document.getElementById('print-sensor').remove()" style="background:#64748b; color:white; padding:10px 20px; border:none; border-radius:5px; margin:5px; width:100%;">NO - REVISAR TICKET</button>
-                            </div>
-                        </div>
-                    `;
-                    document.body.appendChild(overlay);
-                }, 1500);
-            } else {
-                window.close();
-            }
-        };
-
-        // Auto print trigger (non-blocking if possible)
-        setTimeout(function(){
-            window.print();
-        }, 800);
+        // Sin auto-impresión ni auto-cierre.
+        // El usuario elige la acción desde los botones.
     }
 </script>
 </body>

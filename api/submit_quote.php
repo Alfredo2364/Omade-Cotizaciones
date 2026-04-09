@@ -50,7 +50,7 @@ if ($stmt->execute([$name, $email, $phone, $address, $service, $description])) {
     $dateStr = date('d/m/Y H:i');
 
     // Email Logic
-    $to = 'admin@omade.com.mx'; // Replace with actual admin email
+    $to = 'omaderefaccciones@gmail.com'; // Correo real del administrador OMADE
     $subject = "Nueva Cotización Recibida - $ticketCode";
     
     // Barcode URL (Static API for Email)
@@ -116,10 +116,12 @@ if ($stmt->execute([$name, $email, $phone, $address, $service, $description])) {
             <table class='header-table'>
                 <tr>
                     <td width='60%' valign='top'>
-                        <div class='company-name' style='margin-bottom: 5px;'>DISTRIBUCIONES OMADE S.A. DE C.V.</div>
+                        <div class='company-name' style='margin-bottom: 5px;'>DISTRIBUCIONES OMADE</div>
                         <div style='font-size: 11px; color: #555;'>
-                            Calle Ficticia 123, Col. Centro, CDMX<br>
-                            RFC: OMA230101XYZ &bull; Tel: 55 1234 5678
+                            IRMA DOLORES TEC CANCHE<br>
+                            RFC: TECI900407CG7<br>
+                            Calle 18 x 25 y 27 S/N, Loc. Ixil 97343<br>
+                            Ixil, Yucatán &bull; Tel: 999 232 3981
                         </div>
                     </td>
                     <td width='40%' valign='top'>
@@ -127,7 +129,7 @@ if ($stmt->execute([$name, $email, $phone, $address, $service, $description])) {
                         <table class='meta-table'>
                             <tr><td><strong>No. Folio:</strong></td><td align='right'>$ticketCode</td></tr>
                             <tr><td><strong>Fecha:</strong></td><td align='right'>$dateStr</td></tr>
-                            <tr><td><strong>Lugar:</strong></td><td align='right'>CDMX, México</td></tr>
+                            <tr><td><strong>Lugar:</strong></td><td align='right'>Ixil, Yucatán, México</td></tr>
                         </table>
                     </td>
                 </tr>

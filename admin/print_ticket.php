@@ -155,7 +155,7 @@ function convertThreeDigits($n) {
     <title>Imprimir <?= $title ?> #<?= $id ?></title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+        /* Font Awesome loaded via local <link> below */
 
         /* PDF Loading Overlay */
         #pdf-loading {
@@ -195,12 +195,17 @@ function convertThreeDigits($n) {
 
         /* Mobile Screen Optimizations */
         @media screen and (max-width: 768px) {
-            body { padding: 10px; }
-            .document-container { padding: 15px; margin-bottom: 50px; }
+            body { padding: 10px; padding-bottom: 260px; }
+            .document-container { padding: 15px; margin-bottom: 20px; }
             .back-link { position: static; display: block; margin-bottom: 10px; width: fit-content; }
             .header { flex-direction: column; }
             .header-left, .header-right { width: 100%; margin-bottom: 10px; }
             .print-btn { bottom: 10px; right: 10px; padding: 10px 20px; font-size: 14px; }
+        }
+
+        /* Tablet Screen Optimizations */
+        @media screen and (min-width: 769px) and (max-width: 1340px) {
+            body { padding-bottom: 260px; }
         }
 
         .document-container {
@@ -428,7 +433,7 @@ function convertThreeDigits($n) {
             .comments-section, .totals-box { width: 100%; padding-right: 0; }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/vendor/font-awesome/css/all.min.css">
 </head>
 <body>
 
@@ -546,7 +551,7 @@ function convertThreeDigits($n) {
                         <?php foreach($items as $item): ?>
                         <tr>
                             <td><?= $item['quantity'] ?></td>
-                            <td>mult</td> <!-- Placeholder unit -->
+                            <td>Pieza</td> <!-- Unidad -->
                             <td><?= htmlspecialchars($item['name']) ?></td>
                             <td style="text-align: right;">$<?= number_format($item['price'], 2) ?></td>
                             <td style="text-align: right;">$<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
@@ -659,12 +664,8 @@ $waMsg2 = "$waLabelTitle\n"
 $waEncoded2 = rawurlencode($waMsg2);
 ?>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="../assets/js/html2pdf.min.js"></script>
 
-    <!-- PDF Download Button (Visible on Mobile/Tablet primarily) -->
-    <button onclick="downloadPDF()" class="print-btn" style="background: #ef4444; bottom: 80px;" title="Descargar como PDF">
-        <i class="fas fa-file-pdf"></i> PDF
-    </button>
 
     <script>
         // ---- PDF Generation with loading overlay + toast ----
@@ -687,9 +688,8 @@ $waEncoded2 = rawurlencode($waMsg2);
                     jsPDF:       { unit: 'mm', format: format, orientation: orientation }
                 }).from(element).save();
 
-                // Show success toast
                 toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3500);
+                setTimeout(() => { toast.classList.remove('show'); window.close(); }, 2500);
             } catch(e) {
                 alert('Error al generar el PDF. Por favor intenta de nuevo.');
             } finally {
@@ -753,57 +753,49 @@ $waEncoded2 = rawurlencode($waMsg2);
         const isMobileDevice = isAndroid || isIOS || isHarmonyOS || isTouchTablet;
         const isDesktop = !isMobileDevice;
 
-        // ---- DESKTOP: auto-print then close ----
-        if (isDesktop) {
-            window.onafterprint = function() {
-                window.close();
-            };
-            setTimeout(function() {
+        // ---- NOTA DE VENTA: Panel para todos los dispositivos ----
+        <?php if ($type === 'order'): ?>
+        const hasShare = !!navigator.share;
+        const panel = document.createElement('div');
+        panel.id = 'action-panel';
+        panel.style.cssText = `position:fixed;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:12px 20px 30px;box-shadow:0 -8px 30px rgba(0,0,0,0.15);z-index:99999;display:flex;gap:10px;flex-direction:column;align-items:center;animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);`;
+        panel.innerHTML = `
+            <style>@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}.act-btn{width:100%;max-width:420px;padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity 0.2s}.act-btn:active{opacity:0.8}@media print{#action-panel{display:none!important}}</style>
+            <div style="width:40px;height:4px;background:#e2e8f0;border-radius:4px;margin-bottom:8px;"></div>
+            <p style="margin:0 0 8px;font-weight:700;color:#0f172a;font-size:1rem;text-align:center;"><i class="fas fa-file-alt" style="color:#3b82f6;"></i>&nbsp; ¿Qué deseas hacer?</p>
+            <button class="act-btn" onclick="
+                window.onafterprint = function() { window.close(); };
                 window.print();
-            }, 1000);
-        }
+            " style="background:#0f172a;color:white;"><i class="fas fa-print"></i> Imprimir</button>
+            <button class="act-btn" onclick="downloadPDF()" style="background:#ef4444;color:white;"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
+            ${ isMobileDevice && hasShare ? `
+            <button class="act-btn" onclick="shareDocument(this)" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` :
+            isMobileDevice ? `
+            <button class="act-btn" onclick="window.open('https://wa.me/?text=<?= $waEncoded2 ?>', '_blank')" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` : `` }
+            <button class="act-btn" onclick="history.back()" style="background:#f1f5f9;color:#64748b;font-weight:500;"><i class="fas fa-arrow-left"></i> Volver</button>
+        `;
+        document.body.appendChild(panel);
 
-        // ---- ANDROID / TABLET / HARMONYOS: show action panel ----
-        if (isMobileDevice) {
-            const hasShare = !!navigator.share;
-            const panel = document.createElement('div');
-            panel.id = 'mobile-action-panel';
-            panel.style.cssText = `
-                position: fixed; bottom: 0; left: 0; right: 0;
-                background: white; border-radius: 24px 24px 0 0; padding: 12px 20px 30px;
-                box-shadow: 0 -8px 30px rgba(0,0,0,0.15); z-index: 99999;
-                display: flex; gap: 10px; flex-direction: column; align-items: center;
-                animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
-            `;
-            panel.innerHTML = `
-                <style>
-                    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-                    .mob-btn { width:100%; padding:15px; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:opacity 0.2s; }
-                    .mob-btn:active { opacity:0.8; }
-                </style>
-                <!-- Drag handle -->
-                <div style="width:40px;height:4px;background:#e2e8f0;border-radius:4px;margin-bottom:8px;"></div>
-                <p style="margin:0 0 8px;font-weight:700;color:#0f172a;font-size:1rem;text-align:center;">
-                    <i class="fas fa-print" style="color:#3b82f6;"></i>&nbsp; ¿Qué deseas hacer?
-                </p>
-                <button class="mob-btn" onclick="
-                    if(confirm('💡 Tip: En el diálogo de impresión selecciona \'Horizontal\' para mejor resultado.\n\n¿Continuar?')) window.print();
-                " style="background:#0f172a;color:white;">
-                    <i class="fas fa-print"></i> Imprimir
-                </button>
-                <button class="mob-btn" onclick="downloadPDF()" style="background:#ef4444;color:white;">
-                    <i class="fas fa-file-pdf"></i> Descargar PDF
-                </button>
-                ${ hasShare ? `
-                <button class="mob-btn" onclick="shareDocument(this)" style="background:#25d366;color:white;">
-                    <i class="fas fa-share-alt"></i> Compartir por WhatsApp
-                </button>` : `` }
-                <button class="mob-btn" onclick="history.back()" style="background:#f1f5f9;color:#64748b;font-weight:500;">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </button>
-            `;
-            document.body.appendChild(panel);
-        }
+        <?php else: // type === 'quote' ?>
+
+        // ---- COTIZACIÓN: Panel PDF + (WhatsApp en móvil) + Volver ----
+        const hasShareQ = !!navigator.share;
+        const panelQ = document.createElement('div');
+        panelQ.style.cssText = `position:fixed;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:12px 20px 30px;box-shadow:0 -8px 30px rgba(0,0,0,0.15);z-index:99999;display:flex;gap:10px;flex-direction:column;align-items:center;animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);`;
+        panelQ.innerHTML = `
+            <style>@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}.act-btn{width:100%;max-width:420px;padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity 0.2s}.act-btn:active{opacity:0.8}</style>
+            <div style="width:40px;height:4px;background:#e2e8f0;border-radius:4px;margin-bottom:8px;"></div>
+            <p style="margin:0 0 8px;font-weight:700;color:#0f172a;font-size:1rem;text-align:center;"><i class="fas fa-file-alt" style="color:#3b82f6;"></i>&nbsp; Tu Cotización</p>
+            <button class="act-btn" onclick="downloadPDF()" style="background:#ef4444;color:white;"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
+            ${ isMobileDevice && hasShareQ ? `
+            <button class="act-btn" onclick="shareDocument(this)" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` :
+            isMobileDevice ? `
+            <button class="act-btn" onclick="window.open('https://wa.me/?text=<?= $waEncoded2 ?>', '_blank')" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` : `` }
+            <button class="act-btn" onclick="history.back()" style="background:#f1f5f9;color:#64748b;font-weight:500;"><i class="fas fa-arrow-left"></i> Volver</button>
+        `;
+        document.body.appendChild(panelQ);
+
+        <?php endif; ?>
     </script>
 </body>
 </html>
