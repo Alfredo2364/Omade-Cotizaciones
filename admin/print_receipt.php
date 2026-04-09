@@ -177,7 +177,7 @@ function convertThreeDigits($n) {
 
     <div class="meta-block">
         <?= $date ?> &nbsp;&nbsp;&nbsp;&nbsp; <?= $time ?><br>
-        MO/<?= strtoupper($sellerName) ?><br>
+        Vendedor: <?= strtoupper($sellerName) ?><br>
         CLIENTE: <?= strtoupper($clientName) ?><br>
         RFC: TECI900407CG7<br>
         EXPEDIDO EN: IXIL, YUCATÁN, MÉXICO

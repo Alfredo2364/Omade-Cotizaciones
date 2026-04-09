@@ -447,8 +447,7 @@ function convertThreeDigits($n) {
     <!-- Toast Notification -->
     <div id="pdf-toast"><i class="fas fa-check-circle"></i> PDF descargado correctamente</div>
 
-    <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Volver</a>
-    <a href="javascript:window.print()" class="print-btn"><i class="fas fa-print"></i> IMPRIMIR</a>
+
 
     <div class="document-container">
         <!-- HEADER -->
@@ -772,7 +771,7 @@ $waEncoded2 = rawurlencode($waMsg2);
             <button class="act-btn" onclick="shareDocument(this)" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` :
             isMobileDevice ? `
             <button class="act-btn" onclick="window.open('https://wa.me/?text=<?= $waEncoded2 ?>', '_blank')" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` : `` }
-            <button class="act-btn" onclick="history.back()" style="background:#f1f5f9;color:#64748b;font-weight:500;"><i class="fas fa-arrow-left"></i> Volver</button>
+            <button class="act-btn" onclick="window.close()" style="background:#f1f5f9;color:#64748b;font-weight:500;"><i class="fas fa-arrow-left"></i> Volver</button>
         `;
         document.body.appendChild(panel);
 
@@ -781,17 +780,22 @@ $waEncoded2 = rawurlencode($waMsg2);
         // ---- COTIZACIÓN: Panel PDF + (WhatsApp en móvil) + Volver ----
         const hasShareQ = !!navigator.share;
         const panelQ = document.createElement('div');
+        panelQ.id = 'quote-panel';
         panelQ.style.cssText = `position:fixed;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:12px 20px 30px;box-shadow:0 -8px 30px rgba(0,0,0,0.15);z-index:99999;display:flex;gap:10px;flex-direction:column;align-items:center;animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);`;
         panelQ.innerHTML = `
-            <style>@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}.act-btn{width:100%;max-width:420px;padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity 0.2s}.act-btn:active{opacity:0.8}</style>
+            <style>@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}.act-btn{width:100%;max-width:420px;padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity 0.2s}.act-btn:active{opacity:0.8}@media print{#quote-panel{display:none!important}}</style>
             <div style="width:40px;height:4px;background:#e2e8f0;border-radius:4px;margin-bottom:8px;"></div>
             <p style="margin:0 0 8px;font-weight:700;color:#0f172a;font-size:1rem;text-align:center;"><i class="fas fa-file-alt" style="color:#3b82f6;"></i>&nbsp; Tu Cotización</p>
+            <button class="act-btn" onclick="
+                window.onafterprint = function() { window.close(); };
+                window.print();
+            " style="background:#0f172a;color:white;"><i class="fas fa-print"></i> Imprimir</button>
             <button class="act-btn" onclick="downloadPDF()" style="background:#ef4444;color:white;"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
             ${ isMobileDevice && hasShareQ ? `
             <button class="act-btn" onclick="shareDocument(this)" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` :
             isMobileDevice ? `
             <button class="act-btn" onclick="window.open('https://wa.me/?text=<?= $waEncoded2 ?>', '_blank')" style="background:#25d366;color:white;"><i class="fas fa-share-alt"></i> Compartir por WhatsApp</button>` : `` }
-            <button class="act-btn" onclick="history.back()" style="background:#f1f5f9;color:#64748b;font-weight:500;"><i class="fas fa-arrow-left"></i> Volver</button>
+            <button class="act-btn" onclick="window.close()" style="background:#f1f5f9;color:#64748b;font-weight:500;"><i class="fas fa-arrow-left"></i> Volver</button>
         `;
         document.body.appendChild(panelQ);
 
